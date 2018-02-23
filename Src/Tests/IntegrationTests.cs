@@ -46,6 +46,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		public async Task Integration_CanPurchase()
 		{
 			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
 
 			var request = new PurchaseRequestMessage()
 			{
@@ -64,5 +65,9 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
 
+		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)
+		{
+			System.Diagnostics.Trace.WriteLine($"Display Message from {e.Message.Source.ToString()}: {e.Message.MessageText}");
+		}
 	}
 }

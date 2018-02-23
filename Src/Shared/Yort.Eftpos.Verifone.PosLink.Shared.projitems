@@ -14,6 +14,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)DefaultMerchantReferenceGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DeviceBusyException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DeviceStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DisplayMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DisplayMessageResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QueryOperatorEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DisplayMessageEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DisplayMessageSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IMerchantReferenceGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogonResponseMessage.cs" />

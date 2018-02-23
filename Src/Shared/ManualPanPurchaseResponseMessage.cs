@@ -18,9 +18,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Constructs a new message instance from the list of pre-decoded string values received from the pinpad.
 		/// </summary>
-		/// <param name="fields">The list of values returned from the pinpad in the order specified by the protocol and message type.</param>
+		/// <param name="fieldValues">The list of values returned from the pinpad in the order specified by the protocol and message type.</param>
 		/// <see cref="PollRequestMessage"/>
-		public ManualPanPurchaseResponseMessage(IList<string> fields) : base(fields) { }
+		public ManualPanPurchaseResponseMessage(IList<string> fieldValues) : base(fieldValues) { }
 
 		/// <summary>
 		/// Returns "MAN".

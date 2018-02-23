@@ -79,10 +79,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <typeparam name="TResponseMessage">The type of response message to wait for.</typeparam>
 		/// <param name="inStream">The stream to read from.</param>
 		/// <param name="outStream">The stream to write acknowledgements to.</param>
+		/// <param name="displayMessage">An action that can be used to display information/progress/status prompts to the user.</param>
 		/// <returns>A task whose result is an object of the requested {TResponseMessage} type.</returns>
 		/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="inStream"/> or <paramref name="outStream"/> is null.</exception>
 		/// <exception cref="System.ArgumentException">Thrown if <paramref name="inStream"/> is not readable or <paramref name="outStream"/> is not writeable.</exception>
-		public async Task<TResponseMessage> ReadMessageAsync<TResponseMessage>(System.IO.Stream inStream, System.IO.Stream outStream) where TResponseMessage : PosLinkResponseMessageBase
+		public async Task<TResponseMessage> ReadMessageAsync<TResponseMessage>(System.IO.Stream inStream, System.IO.Stream outStream, Action<DisplayMessage> displayMessage) where TResponseMessage : PosLinkResponseMessageBase
 		{
 			inStream.GuardNull(nameof(inStream));
 			if (!inStream.CanRead) throw new ArgumentException(ErrorMessages.StreamMustBeReadable, nameof(inStream));
@@ -100,12 +101,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 				{
 					var fieldValues = ValidateMessageAndParseFields(messageBuffer);
 
-
 					sendAckTask = SendAckAsync(outStream);
 
 					System.Diagnostics.Debug.WriteLine("Received " + fieldValues[0] + " " + fieldValues[1]);
-					if (fieldValues[1] == ProtocolConstants.MessageType_Display)
-						System.Diagnostics.Debug.WriteLine(fieldValues[3]);
 
 					var message = _MessageFactory.CreateMessage(fieldValues);
 					if (message is TResponseMessage retVal)
@@ -116,10 +114,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					if (message.MessageType == ProtocolConstants.MessageType_Poll)
 						continue;
 					else if (message.MessageType == ProtocolConstants.MessageType_Display)
-					{
-						//TODO: This.
-						throw new NotImplementedException();
-					}
+						displayMessage?.Invoke(new DisplayMessage(((DisplayMessageResponse)message).MessageText, DisplayMessageSource.Pinpad));
 					else if (message.MessageType == ProtocolConstants.MessageType_Error)
 					{
 						//TODO: Properly handle error.

@@ -16,16 +16,16 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Full constructor. Constructs a new message instance using the pre-decoded field values in protocol order.
 		/// </summary>
-		/// <param name="fields">A list of strings containing each field value in the order specified by the protocol and message type.</param>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="fields"/> is null.</exception>
-		/// <exception cref="ArgumentException">Thrown if <paramref name="fields"/> does not contain any values, or if the message type in the fields list does not match <see cref="MessageType"/>.</exception>
-		protected PosLinkResponseMessageBase(IList<string> fields)
+		/// <param name="fieldValues">A list of strings containing each field value in the order specified by the protocol and message type.</param>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="fieldValues"/> is null.</exception>
+		/// <exception cref="ArgumentException">Thrown if <paramref name="fieldValues"/> does not contain any values, or if the message type in the fields list does not match <see cref="MessageType"/>.</exception>
+		protected PosLinkResponseMessageBase(IList<string> fieldValues)
 		{
-			fields.GuardNull(nameof(fields));
-			fields.Count.GuardZero(nameof(fields), nameof(fields.Count));
-			if (fields[1] != MessageType) throw new ArgumentException(ErrorMessages.MessageTypeDoesNotMatch, nameof(fields));
+			fieldValues.GuardNull(nameof(fieldValues));
+			fieldValues.Count.GuardZero(nameof(fieldValues), nameof(fieldValues.Count));
+			if (fieldValues[1] != MessageType) throw new ArgumentException(ErrorMessages.MessageTypeDoesNotMatch, nameof(fieldValues));
 			
-			_Fields = fields;
+			_Fields = fieldValues;
 		}
 
 		/// <summary>

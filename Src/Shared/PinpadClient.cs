@@ -22,6 +22,21 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private readonly MessageReader _Reader;
 
 		/// <summary>
+		/// Raised when there is an information prompt or status change that should be displayed to the user.
+		/// </summary>
+		/// <remarks>
+		/// <para>This event may be raised from background threads, any code updating UI may need to invoke to the UI thread.</para>
+		/// </remarks>
+		public event EventHandler<DisplayMessageEventArgs> DisplayMessage;
+		/// <summary>
+		/// Raised when there is a question that must be answered by the operator.
+		/// </summary>
+		/// <remarks>
+		/// <para>This event may be raised from background threads, any code updating UI may need to invoke to the UI thread.</para>
+		/// </remarks>
+		public event EventHandler<QueryOperatorEventArgs> QueryOperator;
+
+		/// <summary>
 		/// Partial constructor.
 		/// </summary>
 		/// <remarks>
@@ -62,14 +77,32 @@ namespace Yort.Eftpos.Verifone.PosLink
 			requestMessage.Validate();
 
 			//TODO: Handle connection failure when someone else is connected (socket error, connected refused).
+			OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
 			using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 			{
+				OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
 				await ConfirmDeviceNotBusy(connection).ConfigureAwait(false);
+				OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
 				await SendAndWaitForAck(requestMessage, connection).ConfigureAwait(false);
-				return await _Reader.ReadMessageAsync<TResponseMessage>(connection.InStream, connection.OutStream).ConfigureAwait(false);
+				OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
+				return await _Reader.ReadMessageAsync<TResponseMessage>(connection.InStream, connection.OutStream, OnDisplayMessage).ConfigureAwait(false);
 			}
 		}
 
+		private void OnDisplayMessage(DisplayMessage message)
+		{
+			try
+			{
+				DisplayMessage?.Invoke(this, new DisplayMessageEventArgs(message));
+			}
+			catch
+			{
+				//TODO: Logging
+#if DEBUG
+				throw;
+#endif
+			}
+		}
 		private async Task SendAndWaitForAck<TRequest>(TRequest requestMessage, PinpadConnection connection) where TRequest : PosLinkRequestMessageBase
 		{
 			var retries = 0;
@@ -104,7 +137,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			await SendAndWaitForAck<PollRequestMessage>(message, connection).ConfigureAwait(false);
 
-			var response = await _Reader.ReadMessageAsync<PollResponseMessage>(connection.InStream, connection.OutStream).ConfigureAwait(false);
+			var response = await _Reader.ReadMessageAsync<PollResponseMessage>(connection.InStream, connection.OutStream, OnDisplayMessage).ConfigureAwait(false);
 			if (response.Status == DeviceStatus.Ready) return;
 
 			throw new DeviceBusyException(String.IsNullOrWhiteSpace(response.Display) ? ErrorMessages.TerminalBusy : response.Display);
