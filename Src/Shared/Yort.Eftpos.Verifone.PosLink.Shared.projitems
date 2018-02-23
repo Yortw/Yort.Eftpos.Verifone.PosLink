@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6c342b19-752e-4092-b067-afe6248f208f</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Yort.Eftpos.Verifone.PosLink</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfoCommon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DefaultMerchantReferenceGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DeviceBusyException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DeviceStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMerchantReferenceGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogonResponseMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MessageFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MessageReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MessageWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PinpadClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PinpadConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PollRequestMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PollResponseMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkNackException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkResponseMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkTransactionRequestMessageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkRequestMessageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkMessageField.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkMessageFieldAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkMessageFieldFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProtocolConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProtocolException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProtocolUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogonRequestMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PurchaseRequestMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResponseCodes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TransactionFailureException.cs" />
+  </ItemGroup>
+</Project>
