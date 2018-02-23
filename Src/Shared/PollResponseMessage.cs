@@ -10,6 +10,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <remarks>
 	/// <para><see cref="PollRequestMessage"/>s are sent automatically by the <see cref="PinpadClient"/> for each request sent throug the <see cref="PinpadClient.ProcessRequest{TRequest, TResponse}(TRequest)"/>. Normally user code does not need to deal with 'poll' messages directly.</para>
 	/// </remarks>
+	/// <see cref="PollResponseMessage"/>
 	public class PollResponseMessage : PosLinkResponseMessageBase
 	{
 		/// <summary>

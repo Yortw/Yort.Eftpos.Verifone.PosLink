@@ -7,7 +7,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Contains the pin pad response to a <see cref="LogonRequestMessage"/>.
 	/// </summary>
-	public class LogonResponseMessage : PosLinkResponseMessageBase
+	/// <seealso cref="LogonRequestMessage"/>
+	public sealed class LogonResponseMessage : PosLinkResponseMessageBase
 	{
 
 		/// <summary>

@@ -55,7 +55,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 			{
 				if (_MessageNameToTypeMap.Count == 0)
 				{
-					//_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_CashOnly)
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_CashOnly, typeof(CashOnlyPurchaseResponseMessage));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Purchase, typeof(PurchaseResponseMessage));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ManualPan, typeof(ManualPanPurchaseResponseMessage));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Logon, typeof(LogonResponseMessage));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Poll, typeof(PollResponseMessage));
 				}

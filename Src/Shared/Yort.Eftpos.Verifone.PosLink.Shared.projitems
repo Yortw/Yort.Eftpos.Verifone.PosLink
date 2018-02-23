@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IMerchantReferenceGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogonResponseMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CashOnlyPurchaseResponseMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MessageFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MessageReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MessageWriter.cs" />
@@ -35,6 +36,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ProtocolException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProtocolUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogonRequestMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManualPanPurchaseResponseMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PurchaseResponseMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PurchaseRequestMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResponseCodes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionFailureException.cs" />

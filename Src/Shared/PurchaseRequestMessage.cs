@@ -11,6 +11,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <remarks>
 	/// <para>Can also be used for cash out without a purchase amount by leaving <see cref="PurchaseAmount"/> as zero and providing a value only for <see cref="CashAmount"/>.</para>
 	/// </remarks>
+	/// <seealso cref="PurchaseResponseMessage"/>
 	public sealed class PurchaseRequestMessage : PosLinkTransactionRequestMessageBase
 	{
 

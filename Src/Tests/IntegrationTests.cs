@@ -39,5 +39,30 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
+
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanPurchase()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+
+			var request = new PurchaseRequestMessage()
+			{
+				PurchaseAmount = 10.00M,
+			};
+			var result = await client.ProcessRequest<PurchaseRequestMessage, PurchaseResponseMessage>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Account: " + result.Account);
+			System.Diagnostics.Trace.WriteLine("Bank Ref: " + result.BankReference);
+			System.Diagnostics.Trace.WriteLine("Truncated Pan: " + result.TruncatedPan);
+			System.Diagnostics.Trace.WriteLine("Merchant Receipt:\r\n " + result.MerchantReceipt);
+			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result.CustomerReceipt);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
 	}
 }
