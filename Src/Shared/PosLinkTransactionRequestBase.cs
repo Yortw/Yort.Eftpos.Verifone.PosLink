@@ -8,12 +8,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Base class for all classes that represent messages that contain transaction options.
 	/// </summary>
-	public abstract class PosLinkTransactionRequestMessageBase : PosLinkRequestMessageBase
+	public abstract class PosLinkTransactionRequestBase : PosLinkRequestBase
 	{
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
-		protected PosLinkTransactionRequestMessageBase()
+		protected PosLinkTransactionRequestBase()
 		{
 		}
 

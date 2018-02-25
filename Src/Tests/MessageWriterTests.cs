@@ -14,7 +14,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var writer = new MessageWriter();
 
-			var message = new PurchaseRequestMessage()
+			var message = new PurchaseRequest()
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
@@ -28,7 +28,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			string formattedMessage;
 			using (var stream = new System.IO.MemoryStream())
 			{
-				await writer.WriteMessageAsync<PurchaseRequestMessage>(message, stream).ConfigureAwait(false);
+				await writer.WriteMessageAsync<PurchaseRequest>(message, stream).ConfigureAwait(false);
 
 				stream.Seek(0, System.IO.SeekOrigin.Begin);
 
@@ -48,7 +48,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var writer = new MessageWriter();
 
-			var message = new PurchaseRequestMessage()
+			var message = new PurchaseRequest()
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
@@ -62,7 +62,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			string formattedMessage;
 			using (var stream = new System.IO.MemoryStream())
 			{
-				await writer.WriteMessageAsync<PurchaseRequestMessage>(message, stream).ConfigureAwait(false);
+				await writer.WriteMessageAsync<PurchaseRequest>(message, stream).ConfigureAwait(false);
 
 				stream.Seek(0, System.IO.SeekOrigin.Begin);
 
@@ -80,7 +80,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		{
 			var writer = new MessageWriter();
 
-			var message = new PurchaseRequestMessage()
+			var message = new PurchaseRequest()
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
@@ -94,7 +94,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			string formattedMessage;
 			using (var stream = new System.IO.MemoryStream())
 			{
-				await writer.WriteMessageAsync<PurchaseRequestMessage>(message, stream).ConfigureAwait(false);
+				await writer.WriteMessageAsync<PurchaseRequest>(message, stream).ConfigureAwait(false);
 
 				stream.Seek(0, System.IO.SeekOrigin.Begin);
 
@@ -112,7 +112,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		{
 			var writer = new MessageWriter();
 
-			var message = new PurchaseRequestMessage()
+			var message = new PurchaseRequest()
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
@@ -126,7 +126,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			string formattedMessage;
 			using (var stream = new System.IO.MemoryStream())
 			{
-				await writer.WriteMessageAsync<PurchaseRequestMessage>(message, stream).ConfigureAwait(false);
+				await writer.WriteMessageAsync<PurchaseRequest>(message, stream).ConfigureAwait(false);
 
 				stream.Seek(0, System.IO.SeekOrigin.Begin);
 

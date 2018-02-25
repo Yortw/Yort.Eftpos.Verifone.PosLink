@@ -16,6 +16,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	{
 
 		private static System.Collections.Concurrent.ConcurrentDictionary<Type, IList<PosLinkMessageField>> _MessageFieldCache;
+		private static System.Collections.Concurrent.ConcurrentDictionary<Type, object> _DefaultValuesCache;
 
 		private System.Text.ASCIIEncoding _Encoding;
 
@@ -26,6 +27,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			_Encoding = new ASCIIEncoding();
 			_MessageFieldCache = _MessageFieldCache ?? new System.Collections.Concurrent.ConcurrentDictionary<Type, IList<PosLinkMessageField>>();
+			_DefaultValuesCache = _DefaultValuesCache ?? new System.Collections.Concurrent.ConcurrentDictionary<Type, object>();
 		}
 
 		/// <summary>
@@ -38,26 +40,41 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <exception cref="System.ArgumentNullException">Thrown if either <paramref name="message"/> or <paramref name="outStream"/> is null.</exception>
 		/// <exception cref="System.ArgumentException">Thrown if either <paramref name="outStream"/> is not writeable.</exception>
 		/// <exception cref="System.InvalidOperationException">A message value encoded for the protocol is longer than allowed.</exception>
-		public async Task WriteMessageAsync<T>(T message, System.IO.Stream outStream) where T : PosLinkRequestMessageBase
+		public async Task WriteMessageAsync<T>(T message, System.IO.Stream outStream) where T : PosLinkRequestBase
 		{
 			message.GuardNull(nameof(message));
 			message.GuardNull(nameof(outStream));
 			if (!outStream.CanWrite) throw new ArgumentException(ErrorMessages.StreamMustBeWriteable, nameof(outStream));
 			message.Validate();
 
-			using (var stream = new System.IO.MemoryStream(512))
+			try
 			{
-				stream.WriteByte(ProtocolConstants.ControlByte_Stx);
+				using (var stream = GlobalSettings.BufferManager.GetStream())
+				{
+					stream.WriteByte(ProtocolConstants.ControlByte_Stx);
 
-				WriteMessageBody(message, stream);
+					WriteMessageBody(message, stream);
 
-				stream.WriteByte(ProtocolConstants.ControlByte_Etx);
+					stream.WriteByte(ProtocolConstants.ControlByte_Etx);
 
-				stream.WriteByte(ProtocolUtilities.CalcLrc(stream, 1));
+					stream.WriteByte(ProtocolUtilities.CalcLrc(stream, 1));
 
-				stream.Seek(0, SeekOrigin.Begin);
-				await stream.CopyToAsync(outStream).ConfigureAwait(false);
-				await outStream.FlushAsync().ConfigureAwait(false);
+					stream.Seek(0, SeekOrigin.Begin);
+
+					if (GlobalSettings.Logger.LogCommunicationPackets)
+					{
+						GlobalSettings.Logger.LogTx(LogMessages.SendingPacket, stream);
+						stream.Seek(0, SeekOrigin.Begin);
+					}
+
+					await stream.CopyToAsync(outStream).ConfigureAwait(false);
+					await outStream.FlushAsync().ConfigureAwait(false);
+				}
+			}
+			catch (Exception ex)
+			{
+				GlobalSettings.Logger.LogError(LogMessages.ErrorSendingMessage, ex);
+				throw;
 			}
 		}
 
@@ -79,13 +96,15 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private IList<PosLinkMessageField> GetFieldsForMessageType<T>(T message)
 		{
-			if (_MessageFieldCache.TryGetValue(typeof(T), out var fields))
+			var messageType = message.GetType();
+
+			if (_MessageFieldCache.TryGetValue(messageType, out var fields))
 				return fields;
 
 			var newFields =
 			(
 				from p
-				in typeof(T).GetProperties()
+				in messageType.GetProperties()
 				select CreateFieldFromProperty(p)
 			);
 
@@ -98,7 +117,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				select f
 			);
 
-			_MessageFieldCache.TryAdd(typeof(T), fields);
+			_MessageFieldCache.TryAdd(messageType, fields);
 
 			return fields;
 		}
@@ -138,8 +157,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 				var type = value.GetType();
 				if (type.IsValueType)
 				{
-					//TODO: Cache default values for better perf/lower costs
-					if (value == Activator.CreateInstance(type)) throw new ArgumentException(ErrorMessages.ValueIsRequired, nameof(value));
+					if (!_DefaultValuesCache.TryGetValue(type, out var defaultValue))
+					{
+						defaultValue = Activator.CreateInstance(type);
+						_DefaultValuesCache.TryAdd(type, defaultValue);
+					}		
+					if (value == defaultValue) throw new ArgumentException(ErrorMessages.ValueIsRequired, nameof(value));
 				}
 			}
 
@@ -159,6 +182,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 					retVal = value.ToString().PadLeft(field.MaxLength, '0');
 					break;
 
+				case PosLinkMessageFieldFormat.DateDdMmYyyy:
+					if (value == null)
+						retVal = String.Empty;
+					else
+						retVal = ((DateTime)value).ToString("ddMMyyyy");
+
+					break;
 				default:
 					throw new InvalidOperationException(ErrorMessages.UnknownMessageFieldFormat);
 			}

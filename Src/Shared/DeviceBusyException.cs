@@ -15,12 +15,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </summary>
 		public DeviceBusyException() : this(ErrorMessages.TerminalBusy) { } 
 		/// <summary>
-		/// Constructor with custom errror message.
+		/// Constructor with custom error message.
 		/// </summary>
 		/// <param name="message">The error message to associate with this exception.</param>
 		public DeviceBusyException(string message) : base(message) { }
 		/// <summary>
-		/// Constructor with custom errror message and wrapped exception.
+		/// Constructor with custom error message and wrapped exception.
 		/// </summary>
 		/// <param name="message">The error message to associate with this exception.</param>
 		/// <param name="inner">The exception to wrap.</param>

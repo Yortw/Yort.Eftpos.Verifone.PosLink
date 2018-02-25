@@ -7,14 +7,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Requests a logon to the payment gateway for the specified merchant account.
 	/// </summary>
-	/// <seealso cref="LogonResponseMessage"/>
-	public sealed class LogonRequestMessage : PosLinkTransactionRequestMessageBase
+	/// <seealso cref="LogonResponse"/>
+	public sealed class LogonRequest : PosLinkTransactionRequestBase
 	{
 
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
-		public LogonRequestMessage() : base()
+		public LogonRequest() : base()
 		{
 		}
 

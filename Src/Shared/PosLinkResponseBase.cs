@@ -8,7 +8,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// A common base class for all messages that are received from the pin pad.
 	/// </summary>
-	public abstract class PosLinkResponseMessageBase
+	public abstract class PosLinkResponseBase
 	{
 
 		private readonly IList<string> _Fields;
@@ -19,7 +19,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="fieldValues">A list of strings containing each field value in the order specified by the protocol and message type.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="fieldValues"/> is null.</exception>
 		/// <exception cref="ArgumentException">Thrown if <paramref name="fieldValues"/> does not contain any values, or if the message type in the fields list does not match <see cref="MessageType"/>.</exception>
-		protected PosLinkResponseMessageBase(IList<string> fieldValues)
+		protected PosLinkResponseBase(IList<string> fieldValues)
 		{
 			fieldValues.GuardNull(nameof(fieldValues));
 			fieldValues.Count.GuardZero(nameof(fieldValues), nameof(fieldValues.Count));

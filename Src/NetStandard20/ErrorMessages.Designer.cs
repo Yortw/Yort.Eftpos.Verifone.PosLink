@@ -70,6 +70,24 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An invalid protocol message was received from the network..
+        /// </summary>
+        internal static string InvalidProtocolMessage {
+            get {
+                return ResourceManager.GetString("InvalidProtocolMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The response &apos;{0}&apos; is not valid. Valid responses are; {1}.
+        /// </summary>
+        internal static string InvalidQueryResponse {
+            get {
+                return ResourceManager.GetString("InvalidQueryResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message does not end with ETX..
         /// </summary>
         internal static string MessageDoesNotEndWithEtx {
@@ -115,6 +133,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The system wanted to prompt the user for a response but no handlers were connected to the PinPadClient.QueryOperator event..
+        /// </summary>
+        internal static string NoHandlerForQueryOperatorConnected {
+            get {
+                return ResourceManager.GetString("NoHandlerForQueryOperatorConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to At least one of PurchaseAmount or CashAmount must be greater than zero..
         /// </summary>
         internal static string PurchaseAmountOrCashAmountMustBeSpecified {
@@ -129,6 +156,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         internal static string ResponseMessagTypeDoesNotContainRequiredConstructor {
             get {
                 return ResourceManager.GetString("ResponseMessagTypeDoesNotContainRequiredConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Response property must be either YES or NO.
+        /// </summary>
+        internal static string ResponseMustBeYesOrNo {
+            get {
+                return ResourceManager.GetString("ResponseMustBeYesOrNo", resourceCulture);
             }
         }
         
@@ -165,6 +201,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         internal static string TransactionFailure {
             get {
                 return ResourceManager.GetString("TransactionFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected response was received from the pin pad. The request and response types do not match..
+        /// </summary>
+        internal static string UnexpectedResponse {
+            get {
+                return ResourceManager.GetString("UnexpectedResponse", resourceCulture);
             }
         }
         

@@ -29,7 +29,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <typeparam name="TResponseMessage">The .Net type of the response message to create.</typeparam>
 		/// <param name="fieldValues">The list of pre-decoded field values to load the response message with.</param>
 		/// <returns>A {TResponseMessage} loaded with the values provided by <paramref name="fieldValues"/>.</returns>
-		public TResponseMessage CreateMessage<TResponseMessage>(IList<string> fieldValues) where TResponseMessage : PosLinkResponseMessageBase
+		public TResponseMessage CreateMessage<TResponseMessage>(IList<string> fieldValues) where TResponseMessage : PosLinkResponseBase
 		{
 			return (TResponseMessage)CreateMessage(typeof(TResponseMessage), fieldValues);
 		}
@@ -38,8 +38,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Creates a new message, using the protocol field at index 1 to determine the message type.
 		/// </summary>
 		/// <param name="fieldValues">The list of pre-decoded field values to load the response message with.</param>
-		/// <returns>An object derived from <see cref="PosLinkResponseMessageBase"/> that is a response message loaded with the values provided by <paramref name="fieldValues"/>.</returns>
-		public PosLinkResponseMessageBase CreateMessage(IList<string> fieldValues)
+		/// <returns>An object derived from <see cref="PosLinkResponseBase"/> that is a response message loaded with the values provided by <paramref name="fieldValues"/>.</returns>
+		public PosLinkResponseBase CreateMessage(IList<string> fieldValues)
 		{
 			var messageName = fieldValues[1];
 
@@ -55,22 +55,30 @@ namespace Yort.Eftpos.Verifone.PosLink
 			{
 				if (_MessageNameToTypeMap.Count == 0)
 				{
-					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_CashOnly, typeof(CashOnlyPurchaseResponseMessage));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Ask, typeof(AskRequest));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_CashOnly, typeof(CashOutResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Error, typeof(ErrorResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Display, typeof(DisplayMessageResponse));
-					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Logon, typeof(LogonResponseMessage));
-					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ManualPan, typeof(ManualPanPurchaseResponseMessage));
-					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Poll, typeof(PollResponseMessage));
-					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Purchase, typeof(PurchaseResponseMessage));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Logon, typeof(LogonResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ManualPanPurchase, typeof(ManualPanPurchaseResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ManualPanRefund, typeof(ManualPanRefundResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Poll, typeof(PollResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Purchase, typeof(PurchaseResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_QueryCard, typeof(QueryCardResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ReprintLastReceipt, typeof(ReprintLastReceiptResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_SettlementCutover, typeof(SettlementCutoverResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_SettlementEnquiry, typeof(SettlementEnquiryResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_TerminalTotals, typeof(TerminalTotalsResponse));
 				}
 			}
 		}
 
-		private PosLinkResponseMessageBase CreateMessage(Type type, IList<string> fieldValues)
+		private PosLinkResponseBase CreateMessage(Type type, IList<string> fieldValues)
 		{
 			var constructor = GetConstructorForResponseMessage(type);
 
 			if (constructor == null) throw new InvalidOperationException(ErrorMessages.ResponseMessagTypeDoesNotContainRequiredConstructor);
-			return (PosLinkResponseMessageBase)constructor.Invoke(new object[] { fieldValues });
+			return (PosLinkResponseBase)constructor.Invoke(new object[] { fieldValues });
 		}
 
 		private static ConstructorInfo GetConstructorForResponseMessage(Type type)

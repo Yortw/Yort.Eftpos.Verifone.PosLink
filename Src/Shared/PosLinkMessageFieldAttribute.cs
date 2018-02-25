@@ -5,7 +5,7 @@ using System.Text;
 namespace Yort.Eftpos.Verifone.PosLink
 {
 	/// <summary>
-	/// An attribute used to decorate fields of <see cref="PosLinkRequestMessageBase"/> types indicating how the field is encoded for the protocol.
+	/// An attribute used to decorate fields of <see cref="PosLinkRequestBase"/> types indicating how the field is encoded for the protocol.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 	public sealed class PosLinkMessageFieldAttribute : Attribute

@@ -8,8 +8,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// A request to poll the device for it's status. Used to determine if the device is currently busy before sending a new request.
 	/// </summary>
-	/// <see cref="PollRequestMessage"/>
-	public sealed class PollRequestMessage : PosLinkRequestMessageBase
+	/// <see cref="PollRequest"/>
+	public sealed class PollRequest : PosLinkRequestBase
 	{
 		/// <summary>
 		/// Returns the string "POL".

@@ -11,16 +11,16 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <remarks>
 	/// <para>Can also be used for cash out without a purchase amount by leaving <see cref="PurchaseAmount"/> as zero and providing a value only for <see cref="CashAmount"/>.</para>
 	/// </remarks>
-	/// <seealso cref="PurchaseRequestMessage"/>
-	public class PurchaseResponseMessage : PosLinkResponseMessageBase
+	/// <seealso cref="PurchaseRequest"/>
+	public abstract class TransactionResponseBase : PosLinkResponseBase
 	{
 
 		/// <summary>
 		/// Constructs a new message instance from the list of pre-decoded string values received from the pinpad.
 		/// </summary>
 		/// <param name="fieldValues">The list of values returned from the pinpad in the order specified by the protocol and message type.</param>
-		/// <see cref="PollRequestMessage"/>
-		public PurchaseResponseMessage(IList<string> fieldValues) : base(fieldValues) { }
+		/// <see cref="PollRequest"/>
+		public TransactionResponseBase(IList<string> fieldValues) : base(fieldValues) { }
 
 		/// <summary>
 		/// Returns "PUR".
@@ -54,7 +54,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public string BankReference { get { return Fields[7]; } }
 
 		/// <summary>
-		/// The STAN code provided by the bank/payment gateway.
+		/// The System Trace Audit Number returned by the pin pad, unique per device transaction.
 		/// </summary>
 		public string STAN { get { return Fields[8]; } }
 

@@ -61,5 +61,35 @@ namespace Yort.Eftpos.Verifone.PosLink
 				_MerchantReferenceGenerator = value;
 			}
 		}
+
+		private static IBufferManager _BufferManager;
+
+		/// <summary>
+		/// Sets or returns the <see cref="IBufferManager"/> implementation to be used by the library.
+		/// </summary>
+		/// <remarks>
+		/// <para>The default value is <see cref="BufferManager.Instance"/>, which is also returned if this property is explicitly set to null.</para>
+		/// </remarks>
+		public static IBufferManager BufferManager
+		{
+			get { return _BufferManager ?? (_BufferManager = new BufferManager()); }
+			set
+			{
+				_BufferManager = value;
+			}
+		}
+
+		private static IEftposLogger _Logger;
+		/// <summary>
+		/// Sets or returns the logging implementation to use.
+		/// </summary>
+		/// <remarks>
+		/// <para>The default value is <see cref="EftposTraceLogger.Instance"/>, which is also used if this property is set explicitly to null.</para>
+		/// </remarks>
+		public static IEftposLogger Logger
+		{
+			get { return _Logger ?? EftposTraceLogger.Instance; }
+			set { _Logger = value; }
+		}
 	}
 }

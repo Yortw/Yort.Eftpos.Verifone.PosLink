@@ -18,8 +18,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private readonly string _Address;
 		private readonly int _Port;
 
+		private object _Synchroniser;
 		private readonly MessageWriter _Writer;
 		private readonly MessageReader _Reader;
+
+		private PinpadConnection _CurrentConnection;
+		private Task<PosLinkResponseBase> _CurrentReadTask;
+		private PosLinkRequestBase _LastRequest;
 
 		/// <summary>
 		/// Raised when there is an information prompt or status change that should be displayed to the user.
@@ -54,6 +59,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="port">The TCP/IP port of the pinpad to connect to.</param>
 		public PinpadClient(string address, int port)
 		{
+			_Synchroniser = new object();
 			_Address = address.GuardNullOrWhiteSpace(nameof(address));
 			_Port = port.GuardRange(nameof(port), 1, Int16.MaxValue);
 
@@ -71,43 +77,192 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="requestMessage"/> message is null, or if any required property of the request is null.</exception>
 		/// <exception cref="System.ArgumentException">Thrown if any property of <paramref name="requestMessage"/> is invalid.</exception>
 		/// <exception cref="TransactionFailureException">Thrown if a critical error occurred determining a transaction status and the user must be prompted to provide the result instead.</exception>
-		public async Task<TResponseMessage> ProcessRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage) where TRequestMessage : PosLinkRequestMessageBase where TResponseMessage : PosLinkResponseMessageBase
+		/// <exception cref="DeviceBusyException">Thrown if the device is already processing a request.</exception>
+		public async Task<TResponseMessage> ProcessRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage) 
+			where TRequestMessage : PosLinkRequestBase 
+			where TResponseMessage : PosLinkResponseBase
 		{
 			requestMessage.GuardNull(nameof(requestMessage));
 			requestMessage.Validate();
 
-			//TODO: Handle connection failure when someone else is connected (socket error, connected refused).
-			OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
-			using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
+			GlobalSettings.Logger.LogInfo(String.Format(LogMessages.ProcessRequest, requestMessage.MerchantReference, requestMessage.RequestType));
+
+			PinpadConnection existingConnection = null;
+			lock (_Synchroniser)
 			{
-				OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
-				await ConfirmDeviceNotBusy(connection).ConfigureAwait(false);
-				OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
-				await SendAndWaitForAck(requestMessage, connection).ConfigureAwait(false);
-				OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
-				return await _Reader.ReadMessageAsync<TResponseMessage>(connection.InStream, connection.OutStream, OnDisplayMessage).ConfigureAwait(false);
+				if (_CurrentConnection != null && requestMessage.RequestType != ProtocolConstants.MessageType_Cancel)
+					throw new DeviceBusyException();
+
+				existingConnection = _CurrentConnection;
 			}
+
+			try
+			{
+				//TODO: Handle connection failure when someone else is connected (socket error, connected refused).
+				OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
+				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
+				{					
+					if (existingConnection == connection)
+					{
+						//Special handling as connection already open and already
+						//a task reading incoming data. Cancellation is the only request 
+						//we should process while another request is being processed.
+						_LastRequest = requestMessage;
+						OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
+						await _Writer.WriteMessageAsync<TRequestMessage>(requestMessage, connection.OutStream).ConfigureAwait(false);
+					}
+					else
+					{
+						OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
+						await ConfirmDeviceNotBusy(connection).ConfigureAwait(false);
+						OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
+						await SendAndWaitForAck<TRequestMessage>(requestMessage, connection).ConfigureAwait(false);
+					}
+
+					OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
+					if (_CurrentReadTask == null)
+						_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(connection);
+
+					var retVal = await _CurrentReadTask.ConfigureAwait(false);
+					return (TResponseMessage)retVal;
+				}
+			}
+			finally
+			{
+				lock (_Synchroniser)
+				{
+					_CurrentReadTask = null;
+					_CurrentConnection = null;
+				}
+			}
+		}
+
+		private async Task<PosLinkResponseBase> ReadUntilFinalResponse<TResponseMessage>(PinpadConnection connection) where TResponseMessage : PosLinkResponseBase
+		{
+			TResponseMessage retVal = null;
+			while (retVal == null)
+			{
+				PosLinkResponseBase message = null;
+
+				var retries = 0;
+				while (retries < ProtocolConstants.MaxRetries)
+				{
+					try
+					{
+						message = await _Reader.ReadMessageAsync(connection.InStream, connection.OutStream).ConfigureAwait(false);
+						break;
+					}
+					catch (PosLinkNackException)
+					{
+						retries++;
+						if (_LastRequest == null || retries >= ProtocolConstants.MaxRetries)
+							throw;
+
+						await Task.Delay(ProtocolConstants.ReadDelay_Milliseconds).ConfigureAwait(false);
+
+						await SendAndWaitForAck(_LastRequest.GetType(), _LastRequest, connection).ConfigureAwait(false);
+					}
+				}
+
+				retVal = message as TResponseMessage;
+				if (retVal != null) break;
+
+				switch (message.MessageType)
+				{
+					case ProtocolConstants.MessageType_Display:
+						OnDisplayMessage(new DisplayMessage(((DisplayMessageResponse)message).MessageText, DisplayMessageSource.Pinpad));
+						break;
+
+					case ProtocolConstants.MessageType_Ask:
+						await ProcessAskRequest((AskRequest)message, connection).ConfigureAwait(false);
+						break;
+
+					case ProtocolConstants.MessageType_Sig:
+						await ProcessSigRequest((SigRequest)message, connection).ConfigureAwait(false);
+						break;
+
+					case ProtocolConstants.MessageType_Error:
+						var errorResponse = message as ErrorResponse;
+						throw new PosLinkProtocolException(errorResponse.Display, errorResponse.Response);
+
+					default:
+						throw new UnexpectedResponseException(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		private async Task ProcessAskRequest(AskRequest request, PinpadConnection connection)
+		{
+			var responseValue = await OnQueryOperator(request.MerchantReference, request.Prompt, null, ProtocolConstants.DefaultQueryResponses).ConfigureAwait(false);
+			if (responseValue == null) return;
+
+			var responseMessage = new AskResponse()
+			{
+				MerchantReference = request.MerchantReference,
+				Response = responseValue
+			};
+			await SendAndWaitForAck<AskResponse>(responseMessage, connection).ConfigureAwait(false);
+		}
+
+		private async Task ProcessSigRequest(SigRequest request, PinpadConnection connection)
+		{
+			var responseValue = await OnQueryOperator(request.MerchantReference, request.Prompt, request.ReceiptText, ProtocolConstants.DefaultQueryResponses).ConfigureAwait(false);
+			if (responseValue == null) return;
+
+			var responseMessage = new SigResponse()
+			{
+				MerchantReference = request.MerchantReference,
+				Response = responseValue
+			};
+			await SendAndWaitForAck<SigResponse>(responseMessage, connection).ConfigureAwait(false);
 		}
 
 		private void OnDisplayMessage(DisplayMessage message)
 		{
 			try
 			{
+				GlobalSettings.Logger.LogInfo(String.Format(LogMessages.DisplayMessage, message.Source, message.MessageText));
+
 				DisplayMessage?.Invoke(this, new DisplayMessageEventArgs(message));
 			}
-			catch
+			catch (Exception ex)
 			{
-				//TODO: Logging
+				GlobalSettings.Logger.LogWarn(LogMessages.ErrorInDisplayMessageEvent, ex);
 #if DEBUG
 				throw;
 #endif
 			}
 		}
-		private async Task SendAndWaitForAck<TRequest>(TRequest requestMessage, PinpadConnection connection) where TRequest : PosLinkRequestMessageBase
+
+		private async Task<string> OnQueryOperator(string merchantReference, string prompt, string receiptText, IReadOnlyList<string> allowedResponses)
+		{
+			GlobalSettings.Logger.LogInfo(String.Format(LogMessages.QueryOperator, merchantReference, prompt, receiptText, String.Join(", ", allowedResponses)));
+
+			var eventArgs = new QueryOperatorEventArgs(prompt, receiptText, allowedResponses);
+			if (QueryOperator == null) throw new InvalidOperationException(ErrorMessages.NoHandlerForQueryOperatorConnected);
+
+			QueryOperator?.Invoke(this, eventArgs);
+
+			var retVal = await eventArgs.ResponseTask.ConfigureAwait(false);
+			GlobalSettings.Logger.LogInfo(String.Format(LogMessages.QueryOperatorResponse, merchantReference, retVal));
+
+			return retVal;
+		}
+
+		private Task SendAndWaitForAck<TRequest>(TRequest requestMessage, PinpadConnection connection) where TRequest : PosLinkRequestBase
+		{
+			return SendAndWaitForAck(typeof(TRequest), requestMessage, connection);
+		}
+
+		private async Task SendAndWaitForAck(Type requestType, PosLinkRequestBase requestMessage, PinpadConnection connection) 
 		{
 			var retries = 0;
 			while (retries < ProtocolConstants.MaxRetries)
 			{
+				GlobalSettings.Logger.LogInfo(String.Format(LogMessages.SendingRequest, requestMessage.RequestType, requestMessage.MerchantReference));
+
 				await _Writer.WriteMessageAsync(requestMessage, connection.OutStream).ConfigureAwait(false);
 				try
 				{
@@ -133,11 +288,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private async Task ConfirmDeviceNotBusy(PinpadConnection connection)
 		{
-			var message = new PollRequestMessage();
+			var message = new PollRequest();
 
-			await SendAndWaitForAck<PollRequestMessage>(message, connection).ConfigureAwait(false);
+			await SendAndWaitForAck<PollRequest>(message, connection).ConfigureAwait(false);
 
-			var response = await _Reader.ReadMessageAsync<PollResponseMessage>(connection.InStream, connection.OutStream, OnDisplayMessage).ConfigureAwait(false);
+			var response = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
 			if (response.Status == DeviceStatus.Ready) return;
 
 			throw new DeviceBusyException(String.IsNullOrWhiteSpace(response.Display) ? ErrorMessages.TerminalBusy : response.Display);
@@ -145,6 +300,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private async Task<PinpadConnection> ConnectAsync(string address, int port)
 		{
+			lock (_Synchroniser)
+			{
+				if (_CurrentConnection != null) return _CurrentConnection;
+			}
+
 			var socket = new System.Net.Sockets.Socket(System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.IP);
 			try
 			{
@@ -156,7 +316,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				};
 				await connection.ClearInputBuffer().ConfigureAwait(false);
 
-				return connection;
+				return _CurrentConnection = connection;
 			}
 			catch
 			{

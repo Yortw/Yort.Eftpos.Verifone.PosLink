@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Yort.Eftpos.Verifone.PosLink
 {
 	/// <summary>
-	/// A class that reads raw data from a stream, parse and decodes the values then deserialises the result into a type derived from <see cref="PosLinkResponseMessageBase"/>.
+	/// A class that reads raw data from a stream, parse and decodes the values then deserialises the result into a type derived from <see cref="PosLinkResponseBase"/>.
 	/// </summary>
 	public class MessageReader
 	{
@@ -51,8 +51,16 @@ namespace Yort.Eftpos.Verifone.PosLink
 						{
 							for (var cnt = 0; cnt < (dataBuffer?.Length ?? 0); cnt++)
 							{
-								if (dataBuffer.Bytes[cnt] == ProtocolConstants.ControlByte_Ack) return;
-								if (dataBuffer.Bytes[cnt] == ProtocolConstants.ControlByte_Nack) throw new PosLinkNackException();
+								if (dataBuffer.Bytes[cnt] == ProtocolConstants.ControlByte_Ack)
+								{
+									GlobalSettings.Logger.LogRx(LogMessages.ReceivedAck, dataBuffer.Bytes, 1);
+									return;
+								}
+								if (dataBuffer.Bytes[cnt] == ProtocolConstants.ControlByte_Nack)
+								{
+									GlobalSettings.Logger.LogRx(LogMessages.ReceivedNack, dataBuffer.Bytes, 1);
+									throw new PosLinkNackException();
+								}
 							}
 						}
 
@@ -69,6 +77,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				//Any failure to receive a response/ACK from the terminal, the POS should assume the device is busy 
 				//processing and report accordingly. 
 				//Multiple transmissions should not be attempted. 
+				GlobalSettings.Logger.LogWarn(LogMessages.NoResponseFromDevice);
 				throw new DeviceBusyException();
 			}
 		}
@@ -76,14 +85,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Reads from the stream until a message of type {TResponseMessage} is received.
 		/// </summary>
-		/// <typeparam name="TResponseMessage">The type of response message to wait for.</typeparam>
 		/// <param name="inStream">The stream to read from.</param>
 		/// <param name="outStream">The stream to write acknowledgements to.</param>
-		/// <param name="displayMessage">An action that can be used to display information/progress/status prompts to the user.</param>
 		/// <returns>A task whose result is an object of the requested {TResponseMessage} type.</returns>
 		/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="inStream"/> or <paramref name="outStream"/> is null.</exception>
 		/// <exception cref="System.ArgumentException">Thrown if <paramref name="inStream"/> is not readable or <paramref name="outStream"/> is not writeable.</exception>
-		public async Task<TResponseMessage> ReadMessageAsync<TResponseMessage>(System.IO.Stream inStream, System.IO.Stream outStream, Action<DisplayMessage> displayMessage) where TResponseMessage : PosLinkResponseMessageBase
+		public async Task<PosLinkResponseBase> ReadMessageAsync(System.IO.Stream inStream, System.IO.Stream outStream) 
 		{
 			inStream.GuardNull(nameof(inStream));
 			if (!inStream.CanRead) throw new ArgumentException(ErrorMessages.StreamMustBeReadable, nameof(inStream));
@@ -91,45 +98,56 @@ namespace Yort.Eftpos.Verifone.PosLink
 			if (!outStream.CanWrite) throw new ArgumentException(ErrorMessages.StreamMustBeWriteable, nameof(outStream));
 
 			Task sendAckTask = null;
-			var waitingForResponse = true;
-			while (waitingForResponse)
+			PosLinkResponseBase message = null;
+			while (message == null)
 			{
-				if (sendAckTask != null)
-					await sendAckTask.ConfigureAwait(false);
-
 				using (var messageBuffer = await ReadMessageBytes(inStream).ConfigureAwait(false))
 				{
-					var fieldValues = ValidateMessageAndParseFields(messageBuffer);
-
-					sendAckTask = SendAckAsync(outStream);
-
-					System.Diagnostics.Debug.WriteLine("Received " + fieldValues[0] + " " + fieldValues[1]);
-
-					var message = _MessageFactory.CreateMessage(fieldValues);
-					if (message is TResponseMessage retVal)
-						return retVal;
-
-					if (message == null) continue; //Unknown message type, keep going
-
-					if (message.MessageType == ProtocolConstants.MessageType_Poll)
-						continue;
-					else if (message.MessageType == ProtocolConstants.MessageType_Display)
-						displayMessage?.Invoke(new DisplayMessage(((DisplayMessageResponse)message).MessageText, DisplayMessageSource.Pinpad));
-					else if (message.MessageType == ProtocolConstants.MessageType_Error)
+					try
 					{
-						//TODO: Properly handle error.
-						throw new PosLinkProtocolException();
+						GlobalSettings.Logger.LogRx(LogMessages.ReceivedPacket, messageBuffer.Bytes, messageBuffer.Length);
+
+						var fieldValues = ValidateMessageAndParseFields(messageBuffer);
+
+						sendAckTask = SendAckAsync(outStream);
+						message = _MessageFactory.CreateMessage(fieldValues);
+
+						await sendAckTask.ConfigureAwait(false);
+						
+						if (message == null)
+							GlobalSettings.Logger.LogWarn(String.Format(LogMessages.UnknownMessageTypeReceived, fieldValues[1]));
+					}
+					catch (PosLinkProtocolException ex)
+					{
+						await SendNackAsync(outStream).ConfigureAwait(false);
+
+						GlobalSettings.Logger.LogError(LogMessages.ErrorReceivingMessage, ex);
 					}
 				}
 			}
 
-			//TODO: Properly handle error. Should never get here?
-			throw new PosLinkProtocolException();
+			return message;
 		}
 
 		private async Task SendAckAsync(Stream outStream)
 		{
+			if (GlobalSettings.Logger.LogCommunicationPackets)
+			{
+				using (var stream = GlobalSettings.BufferManager.GetStream())
+				{
+					stream.WriteByte(ProtocolConstants.ControlByte_Ack);
+					stream.Seek(0, SeekOrigin.Begin);
+					GlobalSettings.Logger.LogTx("Sending ACK", stream);
+				}
+			}
+
 			outStream.WriteByte(ProtocolConstants.ControlByte_Ack);
+			await outStream.FlushAsync().ConfigureAwait(false);
+		}
+
+		private async Task SendNackAsync(Stream outStream)
+		{
+			outStream.WriteByte(ProtocolConstants.ControlByte_Nack);
 			await outStream.FlushAsync().ConfigureAwait(false);
 		}
 
@@ -142,14 +160,28 @@ namespace Yort.Eftpos.Verifone.PosLink
 				try
 				{
 					DataBuffer retVal = null;
-					while (retVal == null) 
+					while (retVal == null)
 					{
 						retVal = await ReadData(inStream, ProtocolConstants.MaxBufferSize_Read, cancelTokenSource.Token).ConfigureAwait(false);
+						if (retVal?.Length == 1)
+						{
+							if (retVal.Bytes[0] == ProtocolConstants.ControlByte_Ack)
+							{
+								GlobalSettings.Logger.LogRx(LogMessages.ReceivedAck, retVal.Bytes, 1);
+								retVal = null;
+								continue;
+							}
+							else if (retVal.Bytes[0] == ProtocolConstants.ControlByte_Nack)
+							{
+								GlobalSettings.Logger.LogRx(LogMessages.ReceivedNack, retVal.Bytes, 1);
+								throw new PosLinkNackException();
+							}
+						}
+
 						if (retVal?.Length < ProtocolConstants.ValidMesage_MinBytes)
 						{
-							//TODO: Report this somehow? Stop reading?
-							//Invalid message
-							retVal = null;
+							GlobalSettings.Logger.LogRx(LogMessages.ReceivedInvalidMessage, retVal.Bytes, retVal.Length);
+							throw new PosLinkProtocolException(ErrorMessages.InvalidProtocolMessage);
 						}
 						cancelTokenSource.Token.ThrowIfCancellationRequested();
 					}
@@ -159,24 +191,24 @@ namespace Yort.Eftpos.Verifone.PosLink
 				{
 					throw new DeviceBusyException(ErrorMessages.TerminalBusy, oce);
 				}
-
-				//Spec 2.2, Page7;
-				//Any failure to receive a response/ACK from the terminal, the POS should assume the device is busy 
-				//processing and report accordingly. 
-				//Multiple transmissions should not be attempted. 
-				throw new DeviceBusyException();
 			}
 		}
-		
+
 		private async Task<DataBuffer> ReadData(System.IO.Stream inStream, int maxBytesToRead, System.Threading.CancellationToken cancelToken)
 		{
-			//TODO: Recycle buffer
-			//TODO: Handle left over bytes from previous read (prefix to this result)?
-			var buffer = new byte[maxBytesToRead];
-			var bytesActuallyRead = await inStream.ReadAsync(buffer, 0, maxBytesToRead, cancelToken).ConfigureAwait(false);
-			if (bytesActuallyRead == 0) return null;
+			var messageBuffer = GlobalSettings.BufferManager.GetBuffer();
+			try
+			{
+				var bytesActuallyRead = await inStream.ReadAsync(messageBuffer.Bytes, 0, maxBytesToRead, cancelToken).ConfigureAwait(false);
+				if (bytesActuallyRead == 0) return null;
 
-			return new DataBuffer(new ArraySegment<byte>(buffer, 0, bytesActuallyRead));
+				return new DataBuffer(messageBuffer.Bytes, bytesActuallyRead, messageBuffer);
+			}
+			catch
+			{
+				messageBuffer?.Dispose();
+				throw;
+			}
 		}
 
 		private IList<string> ValidateMessageAndParseFields(DataBuffer messageBuffer)

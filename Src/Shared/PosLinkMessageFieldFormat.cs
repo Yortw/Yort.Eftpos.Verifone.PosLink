@@ -20,6 +20,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Returns "Y" if the value is true, otherwise "N".
 		/// </summary>
-		YesNoBoolean
+		YesNoBoolean,
+		/// <summary>
+		/// A date formatted as "DDMMYYYY".
+		/// </summary>
+		DateDdMmYyyy
 	}
 }

@@ -5,7 +5,7 @@ using System.Text;
 namespace Yort.Eftpos.Verifone.PosLink
 {
 	/// <summary>
-	/// Represents the possible device status values returned from a <see cref="PollRequestMessage"/> response.
+	/// Represents the possible device status values returned from a <see cref="PollRequest"/> response.
 	/// </summary>
 	public enum DeviceStatus
 	{

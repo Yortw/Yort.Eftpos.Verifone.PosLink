@@ -17,6 +17,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private DefaultMerchantReferenceGenerator()
 		{
+			var now = DateTime.Now;
+			var tempStr = now.ToString("yyMMddHHmmss").PadLeft(12);
+			tempStr = tempStr.Substring(tempStr.Length - 12, 12);
+
+			Seed(Convert.ToInt64(tempStr));
 		}
 
 		/// <summary>

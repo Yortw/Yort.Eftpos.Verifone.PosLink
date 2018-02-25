@@ -5,18 +5,18 @@ using System.Text;
 namespace Yort.Eftpos.Verifone.PosLink
 {
 	/// <summary>
-	/// Contains the pin pad response to a <see cref="LogonRequestMessage"/>.
+	/// Contains the pin pad response to a <see cref="LogonRequest"/>.
 	/// </summary>
-	/// <seealso cref="LogonRequestMessage"/>
-	public sealed class LogonResponseMessage : PosLinkResponseMessageBase
+	/// <seealso cref="LogonRequest"/>
+	public sealed class LogonResponse : PosLinkResponseBase
 	{
 
 		/// <summary>
 		/// Constructs a new message instance from the list of pre-decoded string values received from the pinpad.
 		/// </summary>
 		/// <param name="fieldValues">The list of values returned from the pinpad in the order specified by the protocol and message type.</param>
-		/// <see cref="LogonRequestMessage"/>
-		public LogonResponseMessage(IList<string> fieldValues) : base(fieldValues) { }
+		/// <see cref="LogonRequest"/>
+		public LogonResponse(IList<string> fieldValues) : base(fieldValues) { }
 
 		/// <summary>
 		/// Returns "LOG".

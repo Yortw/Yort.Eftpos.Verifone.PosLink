@@ -29,12 +29,22 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		public const string MessageType_Logon = "LOG";
 
-		public const string MessageType_Purchase = "PUR";
-		public const string MessageType_ManualPan = "MAN";
+		public const string MessageType_Ask = "ASK";
+		public const string MessageType_Cancel = "CAN";
 		public const string MessageType_CashOnly = "CSH";
-		public const string MessageType_Poll = "POL";
-		public const string MessageType_Error = "ERR";
 		public const string MessageType_Display = "DSP";
+		public const string MessageType_Error = "ERR";
+		public const string MessageType_ManualPanPurchase = "MAN";
+		public const string MessageType_ManualPanRefund = "MRF";
+		public const string MessageType_Poll = "POL";
+		public const string MessageType_Purchase = "PUR";
+		public const string MessageType_QueryCard = "QCD";
+		public const string MessageType_Refund = "REF";
+		public const string MessageType_ReprintLastReceipt = "REP";
+		public const string MessageType_SettlementCutover = "SET";
+		public const string MessageType_SettlementEnquiry = "ENQ";
+		public const string MessageType_Sig = "SIG";
+		public const string MessageType_TerminalTotals = "TOL";
 
 		public const int MinMerchantId = 1;
 		public const int MaxMerchantId = 8;
@@ -55,5 +65,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public const int ValidMesage_MinBytes = 5;
 
 		public const int DefaultPort = 4444;
+
+		public const string Response_Yes = "YES";
+		public const string Response_No = "NO";
+
+		public static readonly IReadOnlyList<string> DefaultQueryResponses = (new List<string>() { Response_Yes, Response_No }).AsReadOnly();
+
 	}
 }

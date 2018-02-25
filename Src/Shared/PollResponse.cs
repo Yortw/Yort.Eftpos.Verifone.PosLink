@@ -5,20 +5,20 @@ using System.Text;
 namespace Yort.Eftpos.Verifone.PosLink
 {
 	/// <summary>
-	/// Contains the pin pad response to a <see cref="PollRequestMessage"/>.
+	/// Contains the pin pad response to a <see cref="PollRequest"/>.
 	/// </summary>
 	/// <remarks>
-	/// <para><see cref="PollRequestMessage"/>s are sent automatically by the <see cref="PinpadClient"/> for each request sent throug the <see cref="PinpadClient.ProcessRequest{TRequest, TResponse}(TRequest)"/>. Normally user code does not need to deal with 'poll' messages directly.</para>
+	/// <para><see cref="PollRequest"/>s are sent automatically by the <see cref="PinpadClient"/> for each request sent throug the <see cref="PinpadClient.ProcessRequest{TRequest, TResponse}(TRequest)"/>. Normally user code does not need to deal with 'poll' messages directly.</para>
 	/// </remarks>
-	/// <see cref="PollResponseMessage"/>
-	public class PollResponseMessage : PosLinkResponseMessageBase
+	/// <see cref="PollResponse"/>
+	public class PollResponse : PosLinkResponseBase
 	{
 		/// <summary>
 		/// Constructs a new message instance from the list of pre-decoded string values received from the pinpad.
 		/// </summary>
 		/// <param name="fieldValues">The list of values returned from the pinpad in the order specified by the protocol and message type.</param>
-		/// <see cref="PollRequestMessage"/>
-		public PollResponseMessage(IList<string> fieldValues) : base(fieldValues) { }
+		/// <see cref="PollRequest"/>
+		public PollResponse(IList<string> fieldValues) : base(fieldValues) { }
 
 		/// <summary>
 		/// Returns "POL"
