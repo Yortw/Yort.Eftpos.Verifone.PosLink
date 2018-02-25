@@ -102,7 +102,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			{
 				OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
 				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
-				{					
+				{
 					if (existingConnection == connection)
 					{
 						//Special handling as connection already open and already
@@ -114,6 +114,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 					}
 					else
 					{
+						_CurrentRequestMerchant = requestMessage.Merchant;
+
 						OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
 						var pollResponse = await PollDeviceStatus(connection).ConfigureAwait(false);
 						//If we were only asked to poll, just return the response we already have.
@@ -140,6 +142,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				{
 					_CurrentReadTask = null;
 					_CurrentConnection = null;
+					_CurrentRequestMerchant = 0;
 				}
 			}
 		}
@@ -208,6 +211,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var responseMessage = new AskResponse()
 			{
 				MerchantReference = request.MerchantReference,
+				Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.MerchantId : _CurrentRequestMerchant,
 				Response = responseValue
 			};
 			await SendAndWaitForAck(responseMessage, connection).ConfigureAwait(false);
@@ -221,6 +225,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var responseMessage = new SignatureResponse()
 			{
 				MerchantReference = request.MerchantReference,
+				Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.MerchantId : _CurrentRequestMerchant,
 				Response = responseValue
 			};
 			await SendAndWaitForAck(responseMessage, connection).ConfigureAwait(false);
