@@ -28,12 +28,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public override string MessageType { get { return ProtocolConstants.MessageType_Ask; } }
 
 		/// <summary>
-		/// Sets or returns the number of the merchant account to conduct the transaction under.
-		/// </summary>
-		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 3, Required = true, Sequence = 2)]
-		public int Merchant { get; set; } = GlobalSettings.MerchantId;
-
-		/// <summary>
 		/// The text of the prompt to be displayed to the operator.
 		/// </summary>
 		public string Prompt { get { return Fields[3]; } }

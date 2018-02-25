@@ -154,9 +154,9 @@ namespace Yort.Eftpos.Verifone.PosLink {
         /// <summary>
         ///   Looks up a localized string similar to The type {0} does not contain a required public constructor (.ctor(IList&lt;string&gt;))..
         /// </summary>
-        internal static string ResponseMessagTypeDoesNotContainRequiredConstructor {
+        internal static string ResponseMessageTypeDoesNotContainRequiredConstructor {
             get {
-                return ResourceManager.GetString("ResponseMessagTypeDoesNotContainRequiredConstructor", resourceCulture);
+                return ResourceManager.GetString("ResponseMessageTypeDoesNotContainRequiredConstructor", resourceCulture);
             }
         }
         

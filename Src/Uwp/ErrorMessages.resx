@@ -147,7 +147,7 @@
   <data name="PurchaseAmountOrCashAmountMustBeSpecified" xml:space="preserve">
     <value>At least one of PurchaseAmount or CashAmount must be greater than zero.</value>
   </data>
-  <data name="ResponseMessagTypeDoesNotContainRequiredConstructor" xml:space="preserve">
+  <data name="ResponseMessageTypeDoesNotContainRequiredConstructor" xml:space="preserve">
     <value>The type {0} does not contain a required public constructor (.ctor(IList&lt;string&gt;)).</value>
   </data>
   <data name="ResponseMustBeYesOrNo" xml:space="preserve">

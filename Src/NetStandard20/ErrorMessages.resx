@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CashOutNotAllowedWithManualPan" xml:space="preserve">
-    <value>Cash out is not allowed when using manual PAN.</value>
-  </data>
   <data name="InvalidProtocolMessage" xml:space="preserve">
     <value>An invalid protocol message was received from the network.</value>
   </data>
@@ -147,7 +144,7 @@
   <data name="PurchaseAmountOrCashAmountMustBeSpecified" xml:space="preserve">
     <value>At least one of PurchaseAmount or CashAmount must be greater than zero.</value>
   </data>
-  <data name="ResponseMessagTypeDoesNotContainRequiredConstructor" xml:space="preserve">
+  <data name="ResponseMessageTypeDoesNotContainRequiredConstructor" xml:space="preserve">
     <value>The type {0} does not contain a required public constructor (.ctor(IList&lt;string&gt;)).</value>
   </data>
   <data name="ResponseMustBeYesOrNo" xml:space="preserve">

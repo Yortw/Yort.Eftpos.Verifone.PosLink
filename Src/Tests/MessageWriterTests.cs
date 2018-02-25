@@ -18,7 +18,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
-				MerchantNumber = 1,
+				Merchant = 1,
 				MerchantReference = "D25310001",
 				Id = "Test Text",
 				PurchaseAmount = 10.00M,
@@ -52,7 +52,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
-				MerchantNumber = 1,
+				Merchant = 1,
 				MerchantReference = "D25310001",
 				Id = "Hi, Yort",
 				PurchaseAmount = 10.00M,
@@ -84,7 +84,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
-				MerchantNumber = 1,
+				Merchant = 1,
 				MerchantReference = "D25310001",
 				Id = "Hi, Yort",
 				PurchaseAmount = 10.00M,
@@ -116,7 +116,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			{
 				AllowCredit = true,
 				CashAmount = 0.00M,
-				MerchantNumber = 1,
+				Merchant = 1,
 				MerchantReference = "D25310001",
 				Id = "Hi, Yort",
 				PurchaseAmount = 10.00M,

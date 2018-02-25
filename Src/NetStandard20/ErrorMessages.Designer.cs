@@ -61,15 +61,6 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cash out is not allowed when using manual PAN..
-        /// </summary>
-        internal static string CashOutNotAllowedWithManualPan {
-            get {
-                return ResourceManager.GetString("CashOutNotAllowedWithManualPan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An invalid protocol message was received from the network..
         /// </summary>
         internal static string InvalidProtocolMessage {
@@ -153,9 +144,9 @@ namespace Yort.Eftpos.Verifone.PosLink {
         /// <summary>
         ///   Looks up a localized string similar to The type {0} does not contain a required public constructor (.ctor(IList&lt;string&gt;))..
         /// </summary>
-        internal static string ResponseMessagTypeDoesNotContainRequiredConstructor {
+        internal static string ResponseMessageTypeDoesNotContainRequiredConstructor {
             get {
-                return ResourceManager.GetString("ResponseMessagTypeDoesNotContainRequiredConstructor", resourceCulture);
+                return ResourceManager.GetString("ResponseMessageTypeDoesNotContainRequiredConstructor", resourceCulture);
             }
         }
         

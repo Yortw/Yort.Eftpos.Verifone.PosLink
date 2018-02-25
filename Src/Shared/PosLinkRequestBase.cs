@@ -33,6 +33,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		}
 
 		/// <summary>
+		/// Returns the merchant id associated with this response and it's request.
+		/// </summary>
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 1, Required = true, Sequence = 2)]
+		public int Merchant { get; set; } = GlobalSettings.MerchantId;
+
+		/// <summary>
 		/// Called to ensure all properties are set to valid values. If any value is invalid a <see cref="System.ArgumentException"/> (or derived exception) should be thrown.
 		/// </summary>
 		/// <remarks>
@@ -41,12 +47,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <list type="bullet">
 		/// <item><see cref="MerchantReference"/> must not be null, empty or only whitespace.</item>
 		/// <item><see cref="RequestType"/> must not be null, empty or only whitespace.</item>
+		/// <item><see cref="Merchant"/> is between 1 and 8.</item>
 		/// </list>
 		/// </remarks>
 		public virtual void Validate()
 		{
 			MerchantReference.GuardNullOrWhiteSpace(nameof(MerchantReference));
 			RequestType.GuardNullOrWhiteSpace(nameof(RequestType));
+			Merchant.GuardRange(nameof(Merchant), ProtocolConstants.MinMerchantId, ProtocolConstants.MaxMerchantId);
 		}
 	}
 }
