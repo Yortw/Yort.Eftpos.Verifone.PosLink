@@ -56,6 +56,22 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 		[TestCategory("Integration")]
 		[TestMethod]
+		public async Task Integration_CanSettlementCutover()
+		{
+			 cutvar client = new PinpadClient(PinPadIP, PinPadPort);
+
+			var request = new SettlementCutoverRequest();
+			var result = await client.ProcessRequest<SettlementCutoverRequest, SettlementCutoverResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine(result.ReceiptData);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
 		public async Task Integration_CanPurchase()
 		{
 			var client = new PinpadClient(PinPadIP, PinPadPort);
