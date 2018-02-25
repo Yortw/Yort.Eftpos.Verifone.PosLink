@@ -26,7 +26,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Not used. Ignored by terminal, but required by protocol. Leave empty.
 		/// </summary>
-		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = true, Sequence = 3)]
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = false, Sequence = 3)]
 		public string Id { get; set; }
 
 	}

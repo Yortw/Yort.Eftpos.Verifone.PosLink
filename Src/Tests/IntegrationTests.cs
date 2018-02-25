@@ -58,7 +58,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		[TestMethod]
 		public async Task Integration_CanSettlementCutover()
 		{
-			 cutvar client = new PinpadClient(PinPadIP, PinPadPort);
+			 var client = new PinpadClient(PinPadIP, PinPadPort);
 
 			var request = new SettlementCutoverRequest();
 			var result = await client.ProcessRequest<SettlementCutoverRequest, SettlementCutoverResponse>(request).ConfigureAwait(false);
@@ -136,6 +136,24 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result2.CustomerReceipt);
 
 			Assert.AreEqual(ResponseCodes.TransactionCancelled, result2.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanQueryCard()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new QueryCardRequest();
+			var result = await client.ProcessRequest<QueryCardRequest, QueryCardResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Track1: " + result.CardTrack1);
+			System.Diagnostics.Trace.WriteLine("Track2: " + result.CardTrack2);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
 
 		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)
