@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Yort.Eftpos.Verifone.PosLink
 {
-	internal class ProtocolUtilities
+	internal static class ProtocolUtilities
 	{
 		public static byte CalcLrc(byte[] data, int offset, int length)
 		{
 			byte retVal = 0;
 
-			for (int i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 				retVal ^= data[offset + i];
 
 			return retVal;
@@ -22,7 +22,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			stream.Seek(offset, System.IO.SeekOrigin.Begin);
 
-			int value = 0;
+			var value = 0;
 			while ((value = stream.ReadByte()) != -1)
 			{ 
 				retVal ^= (byte)value;

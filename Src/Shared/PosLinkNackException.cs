@@ -7,7 +7,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Thrown when the pin pad sends an explicit negative acknowledgement to a request.
 	/// </summary>
+#if SUPPORTS_SERIALIZATION
 	[Serializable]
+#endif
 	public class PosLinkNackException : PosLinkProtocolException
 	{
 		/// <summary>
@@ -25,6 +27,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="message">The error message to associate with this exception.</param>
 		/// <param name="inner">The exception to wrap.</param>
 		public PosLinkNackException(string message, Exception inner) : base(message, inner) { }
+#if SUPPORTS_SERIALIZATION
 		/// <summary>
 		/// Deserialisation constructor.
 		/// </summary>
@@ -33,5 +36,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		protected PosLinkNackException(
 		System.Runtime.Serialization.SerializationInfo info,
 		System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+#endif
 	}
 }

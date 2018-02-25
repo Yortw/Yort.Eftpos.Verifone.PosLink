@@ -122,7 +122,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 							throw new DeviceBusyException(String.IsNullOrWhiteSpace(pollResponse.Display) ? ErrorMessages.TerminalBusy : pollResponse.Display);
 
 						OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
-						await SendAndWaitForAck<TRequestMessage>(requestMessage, connection).ConfigureAwait(false);
+						await SendAndWaitForAck(requestMessage, connection).ConfigureAwait(false);
 					}
 
 					OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
@@ -166,7 +166,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 						await Task.Delay(ProtocolConstants.ReadDelay_Milliseconds).ConfigureAwait(false);
 
-						await SendAndWaitForAck(_LastRequest.GetType(), _LastRequest, connection).ConfigureAwait(false);
+						await SendAndWaitForAck(_LastRequest, connection).ConfigureAwait(false);
 					}
 				}
 
@@ -184,7 +184,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 						break;
 
 					case ProtocolConstants.MessageType_Sig:
-						await ProcessSigRequest((SigRequest)message, connection).ConfigureAwait(false);
+						await ProcessSigRequest((SignatureRequest)message, connection).ConfigureAwait(false);
 						break;
 
 					case ProtocolConstants.MessageType_Error:
@@ -209,27 +209,28 @@ namespace Yort.Eftpos.Verifone.PosLink
 				MerchantReference = request.MerchantReference,
 				Response = responseValue
 			};
-			await SendAndWaitForAck<AskResponse>(responseMessage, connection).ConfigureAwait(false);
+			await SendAndWaitForAck(responseMessage, connection).ConfigureAwait(false);
 		}
 
-		private async Task ProcessSigRequest(SigRequest request, PinpadConnection connection)
+		private async Task ProcessSigRequest(SignatureRequest request, PinpadConnection connection)
 		{
 			var responseValue = await OnQueryOperator(request.MerchantReference, request.Prompt, request.ReceiptText, ProtocolConstants.DefaultQueryResponses).ConfigureAwait(false);
 			if (responseValue == null) return;
 
-			var responseMessage = new SigResponse()
+			var responseMessage = new SignatureResponse()
 			{
 				MerchantReference = request.MerchantReference,
 				Response = responseValue
 			};
-			await SendAndWaitForAck<SigResponse>(responseMessage, connection).ConfigureAwait(false);
+			await SendAndWaitForAck(responseMessage, connection).ConfigureAwait(false);
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 		private void OnDisplayMessage(DisplayMessage message)
 		{
 			try
 			{
-				GlobalSettings.Logger.LogInfo(String.Format(LogMessages.DisplayMessage, message.Source, message.MessageText));
+				GlobalSettings.Logger.LogInfo(String.Format(System.Globalization.CultureInfo.InvariantCulture, LogMessages.DisplayMessage, message.Source, message.MessageText));
 
 				DisplayMessage?.Invoke(this, new DisplayMessageEventArgs(message));
 			}
@@ -257,12 +258,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return retVal;
 		}
 
-		private Task SendAndWaitForAck<TRequest>(TRequest requestMessage, PinpadConnection connection) where TRequest : PosLinkRequestBase
-		{
-			return SendAndWaitForAck(typeof(TRequest), requestMessage, connection);
-		}
-
-		private async Task SendAndWaitForAck(Type requestType, PosLinkRequestBase requestMessage, PinpadConnection connection) 
+		private async Task SendAndWaitForAck(PosLinkRequestBase requestMessage, PinpadConnection connection) 
 		{
 			var retries = 0;
 			while (retries < ProtocolConstants.MaxRetries)
@@ -272,7 +268,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				await _Writer.WriteMessageAsync(requestMessage, connection.OutStream).ConfigureAwait(false);
 				try
 				{
-					await _Reader.WaitForAck(connection.InStream).ConfigureAwait(false);
+					await MessageReader.WaitForAck(connection.InStream).ConfigureAwait(false);
 					return;
 				}
 				catch (PosLinkNackException nex)
@@ -296,7 +292,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			var message = new PollRequest();
 
-			await SendAndWaitForAck<PollRequest>(message, connection).ConfigureAwait(false);
+			await SendAndWaitForAck(message, connection).ConfigureAwait(false);
 
 			return (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
 		}
@@ -333,7 +329,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private bool ErrorCodeIndicatesBusy(SocketError socketErrorCode)
+		private static bool ErrorCodeIndicatesBusy(SocketError socketErrorCode)
 		{
 			return socketErrorCode == SocketError.AlreadyInProgress
 				|| socketErrorCode == SocketError.ConnectionRefused

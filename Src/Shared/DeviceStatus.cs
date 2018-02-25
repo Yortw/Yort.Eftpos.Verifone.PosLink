@@ -10,6 +10,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 	public enum DeviceStatus
 	{
 		/// <summary>
+		/// The device status has not been retrieved. Default value.
+		/// </summary>
+		None = 0,
+		/// <summary>
 		/// The device is ready to accept requests.
 		/// </summary>
 		Ready = 80,

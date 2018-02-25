@@ -12,7 +12,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// A class that encodes friendly message objects into raw protocol bytes and writes them to a stream.
 	/// </summary>
-	public class MessageWriter
+	internal class MessageWriter
 	{
 
 		private static System.Collections.Concurrent.ConcurrentDictionary<Type, IList<PosLinkMessageField>> _MessageFieldCache;
@@ -94,7 +94,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private IList<PosLinkMessageField> GetFieldsForMessageType<T>(T message)
+		private static IList<PosLinkMessageField> GetFieldsForMessageType<T>(T message)
 		{
 			var messageType = message.GetType();
 
@@ -122,7 +122,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return fields;
 		}
 
-		private PosLinkMessageField CreateFieldFromProperty(PropertyInfo property)
+		private static PosLinkMessageField CreateFieldFromProperty(PropertyInfo property)
 		{
 			var attribute = property.GetCustomAttribute<PosLinkMessageFieldAttribute>();
 			if (attribute == null) return null;
@@ -155,7 +155,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 				value.GuardNull(nameof(value));
 
 				var type = value.GetType();
+#if SUPPORTS_TYPEINFO
+				if (type.GetTypeInfo().IsValueType)
+#else
 				if (type.IsValueType)
+#endif
 				{
 					if (!_DefaultValuesCache.TryGetValue(type, out var defaultValue))
 					{
@@ -182,11 +186,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 					retVal = value.ToString().PadLeft(field.MaxLength, '0');
 					break;
 
-				case PosLinkMessageFieldFormat.DateDdMmYyyy:
+				case PosLinkMessageFieldFormat.DateddMMyyyy:
 					if (value == null)
 						retVal = String.Empty;
 					else
-						retVal = ((DateTime)value).ToString("ddMMyyyy");
+						retVal = ((DateTime)value).ToString("ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture);
 
 					break;
 				default:
@@ -194,7 +198,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 
 			if (field.MaxLength > 0 && retVal.Length > field.MaxLength)
-				throw new ArgumentException(String.Format(ErrorMessages.ValueIsTooLong, field.Property.Name));
+				throw new ArgumentException(String.Format(System.Globalization.CultureInfo.InvariantCulture, ErrorMessages.ValueIsTooLong, field.Property.Name));
 
 			return retVal;
 		}

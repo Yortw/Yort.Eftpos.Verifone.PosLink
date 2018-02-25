@@ -7,7 +7,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Represents a request from the terminal for the user be asked a question.
 	/// </summary>
-	public class SigRequest : PosLinkResponseBase
+	public class SignatureRequest : PosLinkResponseBase
 	{
 		/// <summary>
 		/// Constructs a new message instance from the list of pre-decoded string values received from the pinpad.
@@ -17,8 +17,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <para>Typically client code does not deal with this message type itself, rather it subscribes to the <see cref="PinpadClient.QueryOperator"/> event.</para>
 		/// </remarks>
 		/// <seealso cref="PinpadClient.QueryOperator"/>
-		/// <seealso cref="SigResponse"/> 
-		public SigRequest(IList<string> fieldValues) : base(fieldValues)
+		/// <seealso cref="SignatureResponse"/> 
+		public SignatureRequest(IList<string> fieldValues) : base(fieldValues)
 		{
 		}
 

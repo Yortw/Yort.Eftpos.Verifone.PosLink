@@ -117,64 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CashOutNotAllowedWithManualPan" xml:space="preserve">
-    <value>Cash out is not allowed when using manual PAN.</value>
+  <data name="DisplayMessage" xml:space="preserve">
+    <value>Display Message ({0}): {1}</value>
   </data>
-  <data name="InvalidProtocolMessage" xml:space="preserve">
-    <value>An invalid protocol message was received from the network.</value>
+  <data name="ErrorInDisplayMessageEvent" xml:space="preserve">
+    <value>An error occurred raising the DisplayMessage event.</value>
   </data>
-  <data name="InvalidQueryResponse" xml:space="preserve">
-    <value>The response '{0}' is not valid. Valid responses are; {1}</value>
+  <data name="ErrorReceivingMessage" xml:space="preserve">
+    <value>Error receiving message:</value>
   </data>
-  <data name="MessageDoesNotEndWithEtx" xml:space="preserve">
-    <value>Message does not end with ETX.</value>
+  <data name="ErrorSendingMessage" xml:space="preserve">
+    <value>Error sending message:</value>
   </data>
-  <data name="MessageDoesNotStartWithStx" xml:space="preserve">
-    <value>Message does not start with STX.</value>
+  <data name="NoResponseFromDevice" xml:space="preserve">
+    <value>No response from device, will report as busy.</value>
   </data>
-  <data name="MessageLrcInvalid" xml:space="preserve">
-    <value>Message LRC is incorrect.</value>
+  <data name="ProcessRequest" xml:space="preserve">
+    <value>Process Request {0}: {1}</value>
   </data>
-  <data name="MessageTypeDoesNotMatch" xml:space="preserve">
-    <value>The message type from the protocol does not match the type of message deserialised into.</value>
+  <data name="QueryOperator" xml:space="preserve">
+    <value>Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n{4}</value>
   </data>
-  <data name="NackExceptionMessage" xml:space="preserve">
-    <value>The device refused to accept the message.</value>
+  <data name="QueryOperatorResponse" xml:space="preserve">
+    <value>Query Operator Response ({0}): {1}</value>
   </data>
-  <data name="NoHandlerForQueryOperatorConnected" xml:space="preserve">
-    <value>The system wanted to prompt the user for a response but no handlers were connected to the PinpadClient.QueryOperator event.</value>
+  <data name="ReceivedAck" xml:space="preserve">
+    <value>Received ACK</value>
   </data>
-  <data name="PurchaseAmountOrCashAmountMustBeSpecified" xml:space="preserve">
-    <value>At least one of PurchaseAmount or CashAmount must be greater than zero.</value>
+  <data name="ReceivedInvalidMessage" xml:space="preserve">
+    <value>Received an invalid packet:</value>
   </data>
-  <data name="ResponseMessagTypeDoesNotContainRequiredConstructor" xml:space="preserve">
-    <value>The type {0} does not contain a required public constructor (.ctor(IList&lt;string&gt;)).</value>
+  <data name="ReceivedNack" xml:space="preserve">
+    <value>Received NACK</value>
   </data>
-  <data name="ResponseMustBeYesOrNo" xml:space="preserve">
-    <value>The Response property must be either YES or NO</value>
+  <data name="ReceivedPacket" xml:space="preserve">
+    <value>Received packet</value>
   </data>
-  <data name="StreamMustBeReadable" xml:space="preserve">
-    <value>Stream provided must be readable.</value>
+  <data name="SendingPacket" xml:space="preserve">
+    <value>Sending packet</value>
   </data>
-  <data name="StreamMustBeWriteable" xml:space="preserve">
-    <value>Stream provided must be writeable.</value>
+  <data name="SendingRequest" xml:space="preserve">
+    <value>Sending request: {0} {1}</value>
   </data>
-  <data name="TerminalBusy" xml:space="preserve">
-    <value>Terminal busy. Please wait...</value>
-  </data>
-  <data name="TransactionFailure" xml:space="preserve">
-    <value>Communication with EFTPOS device has been interrupted. Check terminal for transaction result.</value>
-  </data>
-  <data name="UnexpectedResponse" xml:space="preserve">
-    <value>An unexpected response was received from the pin pad. The request and response types do not match.</value>
-  </data>
-  <data name="UnknownMessageFieldFormat" xml:space="preserve">
-    <value>Unknown or unsupported message field type.</value>
-  </data>
-  <data name="ValueIsRequired" xml:space="preserve">
-    <value>This value is required.</value>
-  </data>
-  <data name="ValueIsTooLong" xml:space="preserve">
-    <value>The formatted value of {0} is too longer than the protocol allows for this field.</value>
+  <data name="UnknownMessageTypeReceived" xml:space="preserve">
+    <value>Unknown message type of '{0}' received.</value>
   </data>
 </root>

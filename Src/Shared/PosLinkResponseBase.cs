@@ -19,6 +19,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="fieldValues">A list of strings containing each field value in the order specified by the protocol and message type.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="fieldValues"/> is null.</exception>
 		/// <exception cref="ArgumentException">Thrown if <paramref name="fieldValues"/> does not contain any values, or if the message type in the fields list does not match <see cref="MessageType"/>.</exception>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		protected PosLinkResponseBase(IList<string> fieldValues)
 		{
 			fieldValues.GuardNull(nameof(fieldValues));
@@ -41,7 +42,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Returns the merchant id associated with this response and it's request.
 		/// </summary>
-		public int Merchant { get { return Convert.ToInt32(_Fields[2]); } }
+		public int Merchant { get { return Convert.ToInt32(_Fields[2], System.Globalization.CultureInfo.InvariantCulture); } }
 
 		/// <summary>
 		/// Returns the list of fields provided by the constructor.

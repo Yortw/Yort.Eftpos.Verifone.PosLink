@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Yort.Eftpos.Verifone.PosLink
 {
+#pragma warning disable 1574
 	/// <summary>
 	/// A simple log implementation that writes out log entries using <see cref="System.Diagnostics.Trace"/>.
 	/// </summary>
@@ -16,6 +17,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <item>Eftpos.Packet</item>
 	/// </list>
 	/// </remarks>
+#pragma warning restore 1574
 	public class EftposNullLogger : IEftposLogger
 	{
 		private const string Category_Error = "Eftpos.Error";

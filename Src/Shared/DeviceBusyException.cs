@@ -7,7 +7,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Thrown when the device report's itself as busy to a new request, or does not ack or respond within the expected period.
 	/// </summary>
+#if SUPPORTS_SERIALIZATION
 	[Serializable]
+#endif
 	public class DeviceBusyException : Exception
 	{
 		/// <summary>
@@ -25,6 +27,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="message">The error message to associate with this exception.</param>
 		/// <param name="inner">The exception to wrap.</param>
 		public DeviceBusyException(string message, Exception inner) : base(message, inner) { }
+#if SUPPORTS_SERIALIZATION
 		/// <summary>
 		/// Deserialisation constructor.
 		/// </summary>
@@ -33,5 +36,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		protected DeviceBusyException(
 		System.Runtime.Serialization.SerializationInfo info,
 		System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+#endif
 	}
 }

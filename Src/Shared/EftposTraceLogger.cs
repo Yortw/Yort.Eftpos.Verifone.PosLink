@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Yort.Eftpos.Verifone.PosLink
 {
+#if SUPPORTS_TRACE
 	/// <summary>
 	/// A simple log implementation that writes out log entries using <see cref="System.Diagnostics.Trace"/>.
 	/// </summary>
@@ -131,4 +132,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return sb.ToString();
 		}
 	}
+
+#endif
 }

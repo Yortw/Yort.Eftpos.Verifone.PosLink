@@ -41,6 +41,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 			get { return _InStream; }
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_InStream")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_OutStream")]
 		public void Dispose()
 		{
 			try

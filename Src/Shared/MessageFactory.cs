@@ -1,3 +1,4 @@
+using Ladon;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -29,7 +30,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <typeparam name="TResponseMessage">The .Net type of the response message to create.</typeparam>
 		/// <param name="fieldValues">The list of pre-decoded field values to load the response message with.</param>
 		/// <returns>A {TResponseMessage} loaded with the values provided by <paramref name="fieldValues"/>.</returns>
-		public TResponseMessage CreateMessage<TResponseMessage>(IList<string> fieldValues) where TResponseMessage : PosLinkResponseBase
+		public static TResponseMessage CreateMessage<TResponseMessage>(IList<string> fieldValues) where TResponseMessage : PosLinkResponseBase
 		{
 			return (TResponseMessage)CreateMessage(typeof(TResponseMessage), fieldValues);
 		}
@@ -41,6 +42,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <returns>An object derived from <see cref="PosLinkResponseBase"/> that is a response message loaded with the values provided by <paramref name="fieldValues"/>.</returns>
 		public PosLinkResponseBase CreateMessage(IList<string> fieldValues)
 		{
+			fieldValues.GuardNull(nameof(fieldValues));
+
 			var messageName = fieldValues[1];
 
 			if (_MessageNameToTypeMap.TryGetValue(messageName, out var messageObjectType))
@@ -74,7 +77,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private PosLinkResponseBase CreateMessage(Type type, IList<string> fieldValues)
+		private static PosLinkResponseBase CreateMessage(Type type, IList<string> fieldValues)
 		{
 			var constructor = GetConstructorForResponseMessage(type);
 

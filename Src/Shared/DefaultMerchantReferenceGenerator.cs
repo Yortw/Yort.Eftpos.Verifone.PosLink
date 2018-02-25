@@ -18,10 +18,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private DefaultMerchantReferenceGenerator()
 		{
 			var now = DateTime.Now;
-			var tempStr = now.ToString("yyMMddHHmmss").PadLeft(12);
+			var tempStr = now.ToString("yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture).PadLeft(12);
 			tempStr = tempStr.Substring(tempStr.Length - 12, 12);
 
-			Seed(Convert.ToInt64(tempStr));
+			Seed(Convert.ToInt64(tempStr, System.Globalization.CultureInfo.InvariantCulture));
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			var newCount = System.Threading.Interlocked.Increment(ref _Counter);
 
-			var retVal = newCount.ToString();
+			var retVal = newCount.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			if (retVal.Length > 12)
 			{
 				ResetCounter();

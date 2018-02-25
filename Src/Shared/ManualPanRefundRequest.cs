@@ -39,6 +39,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <remarks>
 		/// <para>Returns an empty string. Due to PCI-DSS compliance you can no longer provide card details from the PC, the pin pad will prompt for card details when it receives a MAN request.</para>
 		/// </remarks>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 4, Required = false, Sequence = 4)]
 		public string CardExpiryDate { get { return String.Empty; } }
 
@@ -48,6 +49,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <remarks>
 		/// <para>Returns an empty string. Due to PCI-DSS compliance you can no longer provide card details from the PC, the pin pad will prompt for card details when it receives a MAN request.</para>
 		/// </remarks>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 16, Required = false, Sequence = 5)]
 		public string CardNumber { get { return String.Empty; } }
 

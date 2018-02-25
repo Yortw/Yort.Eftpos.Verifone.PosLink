@@ -28,7 +28,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Returns the status of the device, indicating whether it is ready to accept new requests or not.
 		/// </summary>
-		public DeviceStatus Status { get { return (DeviceStatus)Convert.ToInt32(Fields[3]); } }
+		public DeviceStatus Status { get { return (DeviceStatus)Convert.ToInt32(Fields[3], System.Globalization.CultureInfo.InvariantCulture); } }
 
 		/// <summary>
 		/// Returns any text to be displayed to the user.

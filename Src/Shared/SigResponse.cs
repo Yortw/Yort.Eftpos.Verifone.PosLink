@@ -10,14 +10,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <remarks>
 	/// <para>Typically client code does not deal with this message type itself, rather it subscribes to the <see cref="PinpadClient.QueryOperator"/> event.</para>
 	/// </remarks>
-	/// <seealso cref="SigRequest"/>
+	/// <seealso cref="SignatureRequest"/>
 	/// <seealso cref="PinpadClient.QueryOperator"/>
-	public class SigResponse : PosLinkRequestBase
+	public class SignatureResponse : PosLinkRequestBase
 	{
 		/// <summary>
 		/// Constructs a new message instance from the list of pre-decoded string values received from the pinpad.
 		/// </summary>
-		public SigResponse() 
+		public SignatureResponse() 
 		{
 		}
 

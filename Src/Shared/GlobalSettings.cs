@@ -80,15 +80,25 @@ namespace Yort.Eftpos.Verifone.PosLink
 		}
 
 		private static IEftposLogger _Logger;
+
+#pragma warning disable 1574
 		/// <summary>
 		/// Sets or returns the logging implementation to use.
 		/// </summary>
 		/// <remarks>
-		/// <para>The default value is <see cref="EftposTraceLogger.Instance"/>, which is also used if this property is set explicitly to null.</para>
+		/// <para>The default value is <see cref="EftposTraceLogger.Instance"/> on platforms that support it (or otherwise <see cref="EftposNullLogger"/>), which is also used if this property is set explicitly to null.</para>
 		/// </remarks>
+#pragma warning restore 1574
 		public static IEftposLogger Logger
 		{
-			get { return _Logger ?? EftposTraceLogger.Instance; }
+			get
+			{
+#if SUPPORTS_TRACE
+				return _Logger ?? EftposTraceLogger.Instance;
+#else
+				return _Logger ?? EftposNullLogger.Instance;
+#endif
+			}
 			set { _Logger = value; }
 		}
 	}

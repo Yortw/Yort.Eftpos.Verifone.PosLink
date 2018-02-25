@@ -7,7 +7,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Represents an error that occurred at the protocol level.
 	/// </summary>
+#if SUPPORTS_SERIALIZATION
 	[Serializable]
+#endif
 	public class PosLinkProtocolException : Exception
 	{
 		/// <summary>
@@ -24,6 +26,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </summary>
 		/// <param name="message">The error message to associate with this exception.</param>
 		/// <param name="responseCode">The response code returned by the pin pad, if any.</param>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		public PosLinkProtocolException(string message, string responseCode) : base(message)
 		{
 			if (!String.IsNullOrWhiteSpace(responseCode))
@@ -35,6 +38,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="message">The error message to associate with this exception.</param>
 		/// <param name="inner">The exception to wrap.</param>
 		public PosLinkProtocolException(string message, Exception inner) : base(message, inner) { }
+#if SUPPORTS_SERIALIZATION
 		/// <summary>
 		/// Deserialisation constructor.
 		/// </summary>
@@ -43,7 +47,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		protected PosLinkProtocolException(
 		System.Runtime.Serialization.SerializationInfo info,
 		System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
-
+#endif
 		/// <summary>
 		/// The response code returned by the device, if any, otherwise null.
 		/// </summary>

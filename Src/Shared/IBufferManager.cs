@@ -13,12 +13,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Returns a <see cref="System.IO.Stream"/> implementation that can be used in place of a <see cref="System.IO.MemoryStream"/> for temporary serialisation/deserialisation of data.
 		/// </summary>
 		/// <returns>A type derived from <see cref="System.IO.Stream"/>.</returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 		System.IO.Stream GetStream();
 
 		/// <summary>
 		/// Returns a new <see cref="DataBuffer"/> of the maximum size of a protocol message.
 		/// </summary>
 		/// <returns>Returns a new <see cref="DataBuffer"/> instance.</returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 		DataBuffer GetBuffer();
 	}
 }

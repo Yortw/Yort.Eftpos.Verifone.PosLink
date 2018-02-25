@@ -10,7 +10,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <remarks>
 	/// <para>Clients must handle this exception and ask the operator to check the pin pad then manually advise whether the transaction was successful or not.</para>
 	/// </remarks>
+#if SUPPORTS_SERIALIZATION
 	[Serializable]
+#endif
 	public class TransactionFailureException : Exception
 	{
 		/// <summary>
@@ -28,6 +30,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="message">The error message to associate with this exception.</param>
 		/// <param name="inner">The exception to wrap.</param>
 		public TransactionFailureException(string message, Exception inner) : base(message, inner) { }
+#if SUPPORTS_SERIALIZATION
 		/// <summary>
 		/// Deserialisation constructor.
 		/// </summary>
@@ -36,5 +39,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		protected TransactionFailureException(
 		System.Runtime.Serialization.SerializationInfo info,
 		System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+#endif
 	}
 }

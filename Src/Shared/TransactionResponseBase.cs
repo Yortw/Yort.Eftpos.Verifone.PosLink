@@ -20,7 +20,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </summary>
 		/// <param name="fieldValues">The list of values returned from the pinpad in the order specified by the protocol and message type.</param>
 		/// <see cref="PollRequest"/>
-		public TransactionResponseBase(IList<string> fieldValues) : base(fieldValues) { }
+		protected TransactionResponseBase(IList<string> fieldValues) : base(fieldValues) { }
 
 		/// <summary>
 		/// Returns "PUR".
@@ -30,12 +30,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// The purchase value originally requested.
 		/// </summary>
-		public decimal PurchaseAmount { get { return Convert.ToDecimal(Fields[3]); } }
+		public decimal PurchaseAmount { get { return Convert.ToDecimal(Fields[3], System.Globalization.CultureInfo.InvariantCulture); } }
 
 		/// <summary>
 		/// The amount of cash out originally requested.
 		/// </summary>
-		public decimal CashAmount { get { return Convert.ToDecimal(Fields[4]); } }
+		public decimal CashAmount { get { return Convert.ToDecimal(Fields[4], System.Globalization.CultureInfo.InvariantCulture); } }
 
 		/// <summary>
 		/// The response code of the transaction.
@@ -56,7 +56,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// The System Trace Audit Number returned by the pin pad, unique per device transaction.
 		/// </summary>
-		public string STAN { get { return Fields[8]; } }
+		public string Stan { get { return Fields[8]; } }
 
 		/// <summary>
 		/// The truncated card number returned by the device.

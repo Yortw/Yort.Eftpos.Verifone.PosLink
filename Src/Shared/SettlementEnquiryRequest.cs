@@ -26,7 +26,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Requested settlement date (within 7 days). Optional.
 		/// </summary>
-		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.DateDdMmYyyy, MaxLength = 8, Required = true, Sequence = 3)]
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.DateddMMyyyy, MaxLength = 8, Required = true, Sequence = 3)]
 		public DateTime? SettlementDate { get; set; }
 
 		/// <summary>

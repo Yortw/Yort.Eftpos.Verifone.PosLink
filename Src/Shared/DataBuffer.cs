@@ -1,3 +1,4 @@
+using Ladon;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +20,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </summary>
 		/// <param name="buffer">The byte array to wrap. The full length of the array will be assumed to be used.</param>
 		/// <param name="disposable">An object implementing <see cref="IDisposable"/> used to return the buffer to a pool when this instance is disposed.</param>
-		public DataBuffer(byte[] buffer, IDisposable disposable) : this(buffer, buffer.Length, disposable)
+		public DataBuffer(byte[] buffer, IDisposable disposable) : this(buffer.GuardNull(nameof(buffer)), buffer.Length, disposable)
 		{
 		}
 
@@ -48,6 +49,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Returns the byte array associated with this instance.
 		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
 		public byte[] Bytes { get { return _Data; } }
 		
 		/// <summary>

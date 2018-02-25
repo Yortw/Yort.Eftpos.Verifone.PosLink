@@ -9,10 +9,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Yort.Eftpos.Verifone.PosLink.xml</DocumentationFile>
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_TRACE;SUPPORTS_MSGETBUFFER</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netstandard2.0\Yort.Eftpos.Verifone.PosLink.xml</DocumentationFile>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_TRACE;SUPPORTS_MSGETBUFFER</DefineConstants>
   </PropertyGroup>
 
   <Import Project="..\Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems" Label="Shared" />

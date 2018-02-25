@@ -16,7 +16,31 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private readonly PosLinkResponseBase _Response;
 
 		/// <summary>
-		/// Full constructor.
+		/// Default constructor.
+		/// </summary>
+		public UnexpectedResponseException() : this(ErrorMessages.UnexpectedResponse)
+		{
+		}
+
+		/// <summary>
+		/// Partial constructor.
+		/// </summary>
+		/// <param name="errorMessage">The error message to associated with this exception.</param>
+		public UnexpectedResponseException(string errorMessage) : base(errorMessage)
+		{
+		}
+
+		/// <summary>
+		/// Partial constructor.
+		/// </summary>
+		/// <param name="errorMessage">The error message to associated with this exception.</param>
+		/// <param name="innerException">Another exception that is wrapped by this one.</param>
+		public UnexpectedResponseException(string errorMessage, Exception innerException) : base(errorMessage, innerException)
+		{
+		}
+
+		/// <summary>
+		/// Recommended constructor.
 		/// </summary>
 		/// <param name="response">The response message that was received.</param>
 		public UnexpectedResponseException(PosLinkResponseBase response) : base(ErrorMessages.UnexpectedResponse)

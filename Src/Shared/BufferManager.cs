@@ -37,11 +37,17 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var stream = _RecyclableMemoryStreamManager.GetStream();
 			try
 			{
-				return new DataBuffer
-				(
-					stream.GetBuffer(),
-					stream
-				);
+#if SUPPORTS_MSGETBUFFER
+				return new DataBuffer(stream.GetBuffer(), stream);
+#else
+				byte[] buffer = null;
+				if (stream.TryGetBuffer(out var bufferSegment))
+					buffer = bufferSegment.Array;
+				else
+					buffer = new byte[ProtocolConstants.MaxBufferSize_Read];
+
+				return new DataBuffer(buffer, stream);
+#endif
 			}
 			catch
 			{

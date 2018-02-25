@@ -11,7 +11,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// A class that reads raw data from a stream, parse and decodes the values then deserialises the result into a type derived from <see cref="PosLinkResponseBase"/>.
 	/// </summary>
-	public class MessageReader
+	internal class MessageReader
 	{
 		private System.Text.ASCIIEncoding _Encoding;
 		private ResponseMessageFactory _MessageFactory;
@@ -32,7 +32,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <returns>A <see cref="System.Threading.Tasks.Task"/> that can be waited on to determine when an ack has arrived.</returns>
 		/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="inStream"/> is null.</exception>
 		/// <exception cref="System.ArgumentException">Thrown if <paramref name="inStream"/> is not readable.</exception>
-		public async Task WaitForAck(System.IO.Stream inStream)
+		public static async Task WaitForAck(System.IO.Stream inStream)
 		{
 			inStream.GuardNull(nameof(inStream));
 			if (!inStream.CanRead) throw new ArgumentException(ErrorMessages.StreamMustBeReadable, nameof(inStream));
@@ -129,7 +129,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return message;
 		}
 
-		private async Task SendAckAsync(Stream outStream)
+		private static async Task SendAckAsync(Stream outStream)
 		{
 			if (GlobalSettings.Logger.LogCommunicationPackets)
 			{
@@ -145,13 +145,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 			await outStream.FlushAsync().ConfigureAwait(false);
 		}
 
-		private async Task SendNackAsync(Stream outStream)
+		private static async Task SendNackAsync(Stream outStream)
 		{
 			outStream.WriteByte(ProtocolConstants.ControlByte_Nack);
 			await outStream.FlushAsync().ConfigureAwait(false);
 		}
 
-		private async Task<DataBuffer> ReadMessageBytes(System.IO.Stream inStream)
+		private async static Task<DataBuffer> ReadMessageBytes(System.IO.Stream inStream)
 		{
 			using (var cancelTokenSource = new System.Threading.CancellationTokenSource())
 			{
@@ -194,7 +194,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private async Task<DataBuffer> ReadData(System.IO.Stream inStream, int maxBytesToRead, System.Threading.CancellationToken cancelToken)
+		private static async Task<DataBuffer> ReadData(System.IO.Stream inStream, int maxBytesToRead, System.Threading.CancellationToken cancelToken)
 		{
 			var messageBuffer = GlobalSettings.BufferManager.GetBuffer();
 			try
@@ -236,7 +236,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return retVal;
 		}
 
-		private bool IsLrcValid(DataBuffer messageBuffer)
+		private static bool IsLrcValid(DataBuffer messageBuffer)
 		{
 			return messageBuffer.Bytes[messageBuffer.Length - 1]
 				!= ProtocolUtilities.CalcLrc(messageBuffer.Bytes, 1, messageBuffer.Length - 1);

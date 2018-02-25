@@ -63,14 +63,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public void SetResponse(string response)
 		{
 			response.GuardNullOrWhiteSpace(response);
-			if (!this.AllowedResponses.Contains(response)) throw new ArgumentException(String.Format(ErrorMessages.InvalidQueryResponse, response, String.Join(", ", AllowedResponses)));
+			if (!this.AllowedResponses.Contains(response)) throw new ArgumentException(String.Format(System.Globalization.CultureInfo.InvariantCulture, ErrorMessages.InvalidQueryResponse, response, String.Join(", ", AllowedResponses)));
 
 			_ResponseCompletionSource.TrySetResult(response);
-		}
-
-		internal void Cancel()
-		{
-			_ResponseCompletionSource.TrySetCanceled();
 		}
 
 		internal Task<string> ResponseTask { get { return _ResponseCompletionSource.Task; } }

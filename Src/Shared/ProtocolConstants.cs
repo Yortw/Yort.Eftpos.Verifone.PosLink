@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Yort.Eftpos.Verifone.PosLink
 {
-	internal class ProtocolConstants
+	internal static class ProtocolConstants
 	{
 
 		public const byte ControlByte_Ack = 0x06;
