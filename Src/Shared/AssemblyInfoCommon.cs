@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -14,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Yort.Eftpos.Verifone.PosLink")]
 [assembly: AssemblyCopyright("Copyright © 2018")]
-[assembly: AssemblyCulture("en")]
+[assembly: NeutralResourcesLanguage("en")]
 
 // Version information for an assembly consists of the following four values:
 //
