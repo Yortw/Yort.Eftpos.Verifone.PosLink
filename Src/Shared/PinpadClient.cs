@@ -2,6 +2,7 @@ using Ladon;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -98,7 +99,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			try
 			{
-				//TODO: Handle connection failure when someone else is connected (socket error, connected refused).
 				OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
 				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 				{					
@@ -321,11 +321,24 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 				return _CurrentConnection = connection;
 			}
+			catch (System.Net.Sockets.SocketException sex)
+			{
+				if (ErrorCodeIndicatesBusy(sex.SocketErrorCode)) throw new DeviceBusyException(sex.Message, sex);
+				throw;
+			}
 			catch
 			{
 				socket?.Dispose();
 				throw;
 			}
+		}
+
+		private bool ErrorCodeIndicatesBusy(SocketError socketErrorCode)
+		{
+			return socketErrorCode == SocketError.AlreadyInProgress
+				|| socketErrorCode == SocketError.ConnectionRefused
+				|| socketErrorCode == SocketError.InProgress
+				|| socketErrorCode == SocketError.IsConnected;
 		}
 	}
 }
