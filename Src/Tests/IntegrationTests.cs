@@ -35,6 +35,20 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
 
+		[ExpectedException(typeof(DeviceBusyException))]
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_ThrowsDeviceBusyIfAlreadyConnected()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+
+			var request = new LogonRequest();
+			var t1 = client.ProcessRequest<LogonRequest, LogonResponse>(request);
+			var t2 = await client.ProcessRequest<LogonRequest, LogonResponse>(request);
+
+			Assert.Fail("No exception thrown");
+		}
+
 		[TestCategory("Integration")]
 		[TestMethod]
 		public async Task Integration_CanSettlementEnquiry()
