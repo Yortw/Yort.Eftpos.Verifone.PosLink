@@ -13,8 +13,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)EftposNullLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IBufferManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IEftposLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SigResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SigRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SignatureResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SignatureRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AskResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AskRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfoCommon.cs" />

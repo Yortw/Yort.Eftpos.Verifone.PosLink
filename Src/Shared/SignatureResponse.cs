@@ -33,6 +33,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public string Response { get; set; }
 
 		/// <summary>
+		/// Sets or returns the number of the merchant account to conduct the transaction under.
+		/// </summary>
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 3, Required = true, Sequence = 2)]
+		public int Merchant { get; set; } = GlobalSettings.MerchantId;
+
+		/// <summary>
 		/// Validates that <see cref="Response"/> is either "YES" or "NO".
 		/// </summary>
 		public override void Validate()

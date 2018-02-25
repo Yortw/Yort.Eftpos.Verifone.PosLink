@@ -115,7 +115,7 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n{4}.
+        ///   Looks up a localized string similar to Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n.
         /// </summary>
         internal static string QueryOperator {
             get {

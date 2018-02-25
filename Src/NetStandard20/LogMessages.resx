@@ -136,7 +136,7 @@
     <value>Process Request {0}: {1}</value>
   </data>
   <data name="QueryOperator" xml:space="preserve">
-    <value>Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n{4}</value>
+    <value>Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n</value>
   </data>
   <data name="QueryOperatorResponse" xml:space="preserve">
     <value>Query Operator Response ({0}): {1}</value>

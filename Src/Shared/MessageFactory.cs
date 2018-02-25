@@ -70,6 +70,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_QueryCard, typeof(QueryCardResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Refund, typeof(RefundResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ReprintLastReceipt, typeof(ReprintLastReceiptResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Sig, typeof(SignatureRequest));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_SettlementCutover, typeof(SettlementCutoverResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_SettlementEnquiry, typeof(SettlementEnquiryResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_TerminalTotals, typeof(TerminalTotalsResponse));
@@ -81,7 +82,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			var constructor = GetConstructorForResponseMessage(type);
 
-			if (constructor == null) throw new InvalidOperationException(ErrorMessages.ResponseMessagTypeDoesNotContainRequiredConstructor);
+			if (constructor == null) throw new InvalidOperationException(String.Format(ErrorMessages.ResponseMessagTypeDoesNotContainRequiredConstructor, type.FullName));
 			return (PosLinkResponseBase)constructor.Invoke(new object[] { fieldValues });
 		}
 

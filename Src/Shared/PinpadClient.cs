@@ -26,6 +26,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private PinpadConnection _CurrentConnection;
 		private Task<PosLinkResponseBase> _CurrentReadTask;
 		private PosLinkRequestBase _LastRequest;
+		private int _CurrentRequestMerchantNumber;
 
 		/// <summary>
 		/// Raised when there is an information prompt or status change that should be displayed to the user.

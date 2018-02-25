@@ -106,7 +106,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		{
 			var client = new PinpadClient(PinPadIP, PinPadPort);
 			client.DisplayMessage += Client_DisplayMessage;
-
+			client.QueryOperator += Client_QueryOperator;
 			var request = new PurchaseRequest()
 			{
 				PurchaseAmount = 10.00M
@@ -122,6 +122,11 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result.CustomerReceipt);
 
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		private void Client_QueryOperator(object sender, QueryOperatorEventArgs e)
+		{
+			e.SetResponse("YES");
 		}
 
 		[TestCategory("Integration")]
