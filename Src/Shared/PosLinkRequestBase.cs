@@ -36,7 +36,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Returns the merchant id associated with this response and it's request.
 		/// </summary>
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 1, Required = true, Sequence = 2)]
-		public int Merchant { get; set; } = GlobalSettings.MerchantId;
+		public int Merchant { get; set; } = GlobalSettings.DefaultMerchant;
 
 		/// <summary>
 		/// Called to ensure all properties are set to valid values. If any value is invalid a <see cref="System.ArgumentException"/> (or derived exception) should be thrown.

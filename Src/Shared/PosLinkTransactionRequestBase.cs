@@ -32,12 +32,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// If true, asks the terminal to return any EFTPOS receipt as part of the relevant response messages.
 		/// </summary>
-		public bool ReturnReceipt { get; set; } = GlobalSettings.ReturnReceipt;
+		public bool ReturnReceipt { get; set; } = GlobalSettings.DefaultReturnReceipt;
 
 		/// <summary>
 		/// If true, credit (such as VISA/MasterCard/Amex etc) transactions are allowed. If false, only non-credit EFTPOS transactions are allowed.
 		/// </summary>
-		public bool AllowCredit { get; set; } = GlobalSettings.AllowCredit;
+		public bool AllowCredit { get; set; } = GlobalSettings.DefaultAllowCredit;
 
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private static char BooleanToYesNo(bool value)

@@ -211,7 +211,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var responseMessage = new AskResponse()
 			{
 				MerchantReference = request.MerchantReference,
-				Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.MerchantId : _CurrentRequestMerchant,
+				Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.DefaultMerchant : _CurrentRequestMerchant,
 				Response = responseValue
 			};
 			await SendAndWaitForAck(responseMessage, connection).ConfigureAwait(false);
@@ -225,7 +225,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var responseMessage = new SignatureResponse()
 			{
 				MerchantReference = request.MerchantReference,
-				Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.MerchantId : _CurrentRequestMerchant,
+				Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.DefaultMerchant : _CurrentRequestMerchant,
 				Response = responseValue
 			};
 			await SendAndWaitForAck(responseMessage, connection).ConfigureAwait(false);
@@ -296,7 +296,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private async Task<PollResponse> PollDeviceStatus(PinpadConnection connection)
 		{
-			var message = new PollRequest();
+			var message = new PollRequest() { Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.DefaultMerchant : _CurrentRequestMerchant };
 
 			await SendAndWaitForAck(message, connection).ConfigureAwait(false);
 

@@ -17,7 +17,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <remarks>
 		/// <para>The default value is true.</para>
 		/// </remarks>
-		public static bool AllowCredit { get; set; } = true;
+		public static bool DefaultAllowCredit { get; set; } = true;
 
 		/// <summary>
 		/// If true, asks the terminal to return any EFTPOS receipt as part of the relevant response messages.
@@ -25,7 +25,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <remarks>
 		/// <para>The default value is true.</para>
 		/// </remarks>
-		public static bool ReturnReceipt { get; set; } = true;
+		public static bool DefaultReturnReceipt { get; set; } = true;
 
 		private static int _MerchantId = 1;
 
@@ -36,7 +36,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <para>The default value is 1.</para>
 		/// </remarks>
 		/// <exception cref="System.ArgumentException">Thrown if the value provided is less than 1 or greater than 8.</exception>
-		public static int MerchantId
+		public static int DefaultMerchant
 		{
 			get { return _MerchantId; }
 			set
