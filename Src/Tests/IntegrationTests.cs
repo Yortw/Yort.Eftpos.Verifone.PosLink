@@ -13,6 +13,12 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		private const string PinPadIP = "10.10.10.118";
 		private const int PinPadPort = 4444;
 
+		//TODO: Cash out
+		//TODO: Man Pan Purch
+		//TODO: Man Pan Refund
+		//TODO: Poll request
+		//TODO: Refund
+
 		[TestInitialize]
 		public void Initialize()
 		{
@@ -172,6 +178,24 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 			Assert.IsFalse(String.IsNullOrWhiteSpace(result.ReceiptData));
+		}
+
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanPollDevice()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new PollRequest();
+			var result = await client.ProcessRequest<PollRequest, PollResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Status);
+			System.Diagnostics.Trace.WriteLine("Display: " + result.Display);
+
+			Assert.AreEqual(DeviceStatus.Ready, result.Status);
 		}
 
 		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)

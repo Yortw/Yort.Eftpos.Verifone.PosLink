@@ -114,7 +114,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 					else
 					{
 						OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
-						await ConfirmDeviceNotBusy(connection).ConfigureAwait(false);
+						var pollResponse = await PollDeviceStatus(connection).ConfigureAwait(false);
+						//If we were only asked to poll, just return the response we already have.
+						if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll)
+							return (TResponseMessage)(PosLinkResponseBase)pollResponse;
+						else if (pollResponse.Status == DeviceStatus.Busy)
+							throw new DeviceBusyException(String.IsNullOrWhiteSpace(pollResponse.Display) ? ErrorMessages.TerminalBusy : pollResponse.Display);
+
 						OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
 						await SendAndWaitForAck<TRequestMessage>(requestMessage, connection).ConfigureAwait(false);
 					}
@@ -286,16 +292,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 			throw new TransactionFailureException(ErrorMessages.TransactionFailure, new PosLinkNackException());
 		}
 
-		private async Task ConfirmDeviceNotBusy(PinpadConnection connection)
+		private async Task<PollResponse> PollDeviceStatus(PinpadConnection connection)
 		{
 			var message = new PollRequest();
 
 			await SendAndWaitForAck<PollRequest>(message, connection).ConfigureAwait(false);
 
-			var response = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
-			if (response.Status == DeviceStatus.Ready) return;
-
-			throw new DeviceBusyException(String.IsNullOrWhiteSpace(response.Display) ? ErrorMessages.TerminalBusy : response.Display);
+			return (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
 		}
 
 		private async Task<PinpadConnection> ConnectAsync(string address, int port)
