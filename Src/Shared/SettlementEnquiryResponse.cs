@@ -21,7 +21,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Returns "TOL".
 		/// </summary>
-		public override string MessageType { get { return ProtocolConstants.MessageType_TerminalTotals; } }
+		public override string MessageType { get { return ProtocolConstants.MessageType_SettlementEnquiry; } }
 
 		/// <summary>
 		/// Returns the response code for this request.

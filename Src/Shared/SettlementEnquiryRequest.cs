@@ -26,13 +26,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Requested settlement date (within 7 days). Optional.
 		/// </summary>
-		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.DateDdMmYyyy, MaxLength = 1, Required = true, Sequence = 3)]
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.DateDdMmYyyy, MaxLength = 8, Required = true, Sequence = 3)]
 		public DateTime? SettlementDate { get; set; }
 
 		/// <summary>
 		/// Not used. Ignored by terminal, but required by protocol. Leave empty.
 		/// </summary>
-		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = true, Sequence = 4)]
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = false, Sequence = 4)]
 		public string Id { get; set; }
 
 	}

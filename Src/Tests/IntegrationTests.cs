@@ -21,12 +21,31 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 		[TestCategory("Integration")]
 		[TestMethod]
-		public async Task Integration_LogonSucceeds()
+		public async Task Integration_CanLogon()
 		{
 			var client = new PinpadClient(PinPadIP, PinPadPort);
 
 			var request = new LogonRequest();
 			var result = await client.ProcessRequest<LogonRequest, LogonResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine(result.ReceiptData);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanSettlementEnquiry()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+
+			var request = new SettlementEnquiryRequest()
+			{
+				SettlementDate = DateTime.Today
+			};
+			var result = await client.ProcessRequest<SettlementEnquiryRequest, SettlementEnquiryResponse>(request).ConfigureAwait(false);
 
 			Assert.IsNotNull(result);
 			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
@@ -58,7 +77,6 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
-
 
 		[TestCategory("Integration")]
 		[TestMethod]
