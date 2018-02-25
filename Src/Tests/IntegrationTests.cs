@@ -156,6 +156,24 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
 
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanReprintLastReceipt()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new ReprintLastReceiptRequest();
+			var result = await client.ProcessRequest<ReprintLastReceiptRequest, ReprintLastReceiptResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Receipt Data: " + result.ReceiptData);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+			Assert.IsFalse(String.IsNullOrWhiteSpace(result.ReceiptData));
+		}
+
 		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)
 		{
 			System.Diagnostics.Trace.WriteLine($"Display Message from {e.Message.Source.ToString()}: {e.Message.MessageText}");
