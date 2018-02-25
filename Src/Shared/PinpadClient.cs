@@ -103,37 +103,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
 				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 				{
-					if (existingConnection == connection)
-					{
-						//Special handling as connection already open and already
-						//a task reading incoming data. Cancellation is the only request 
-						//we should process while another request is being processed.
-						_LastRequest = requestMessage;
-						OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
-						await _Writer.WriteMessageAsync<TRequestMessage>(requestMessage, connection.OutStream).ConfigureAwait(false);
-					}
-					else
-					{
-						_CurrentRequestMerchant = requestMessage.Merchant;
-
-						OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
-						var pollResponse = await PollDeviceStatus(connection).ConfigureAwait(false);
-						//If we were only asked to poll, just return the response we already have.
-						if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll)
-							return (TResponseMessage)(PosLinkResponseBase)pollResponse;
-						else if (pollResponse.Status == DeviceStatus.Busy)
-							throw new DeviceBusyException(String.IsNullOrWhiteSpace(pollResponse.Display) ? ErrorMessages.TerminalBusy : pollResponse.Display);
-
-						OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
-						await SendAndWaitForAck(requestMessage, connection).ConfigureAwait(false);
-					}
-
-					OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
-					if (_CurrentReadTask == null)
-						_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(connection);
-
-					var retVal = await _CurrentReadTask.ConfigureAwait(false);
-					return (TResponseMessage)retVal;
+					return await SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection).ConfigureAwait(false);
 				}
 			}
 			finally
@@ -145,6 +115,64 @@ namespace Yort.Eftpos.Verifone.PosLink
 					_CurrentRequestMerchant = 0;
 				}
 			}
+		}
+
+		private async Task<TResponseMessage> SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage, PinpadConnection existingConnection, PinpadConnection connection)
+			where TRequestMessage : PosLinkRequestBase
+			where TResponseMessage : PosLinkResponseBase
+		{
+			var retry = 0;
+			while (retry <= ProtocolConstants.MaxRetries)
+			{
+				if (existingConnection == connection)
+				{
+					//Special handling as connection already open and already
+					//a task reading incoming data. Cancellation is the only request 
+					//we should process while another request is being processed.
+					_LastRequest = requestMessage;
+					OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
+					await _Writer.WriteMessageAsync<TRequestMessage>(requestMessage, connection.OutStream).ConfigureAwait(false);
+				}
+				else
+				{
+					if (retry == 0)
+						_CurrentRequestMerchant = requestMessage.Merchant;
+
+					OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
+					try
+					{
+						var pollResponse = await PollDeviceStatus(connection, retry == 0).ConfigureAwait(false); // If this is not the first attempt we just want to know the device is responding at all
+						//If we were only asked to poll, just return the response we already have.
+						if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll)
+							return (TResponseMessage)(PosLinkResponseBase)pollResponse;
+					}
+					catch (DeviceBusyException dbe)
+					{
+						throw new TransactionFailureException(ErrorMessages.TransactionFailure, dbe);
+					}
+
+					OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
+					await SendAndWaitForAck(requestMessage, connection).ConfigureAwait(false);
+				}
+
+				try
+				{
+					OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
+					if (_CurrentReadTask == null)
+						_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(connection);
+
+					var retVal = await _CurrentReadTask.ConfigureAwait(false);
+					return (TResponseMessage)retVal;
+				}
+				catch (OperationCanceledException)
+				{
+					retry++;
+				}
+			}
+
+			//After max retries we still got no response
+			//See POS Link spec 2.2, page 45, Messaging Timeouts section.
+			throw new TransactionFailureException(ErrorMessages.TransactionFailure);
 		}
 
 		private async Task<PosLinkResponseBase> ReadUntilFinalResponse<TResponseMessage>(PinpadConnection connection) where TResponseMessage : PosLinkResponseBase
@@ -294,13 +322,18 @@ namespace Yort.Eftpos.Verifone.PosLink
 			throw new TransactionFailureException(ErrorMessages.TransactionFailure, new PosLinkNackException());
 		}
 
-		private async Task<PollResponse> PollDeviceStatus(PinpadConnection connection)
+		private async Task<PollResponse> PollDeviceStatus(PinpadConnection connection, bool throwIfBusy)
 		{
 			var message = new PollRequest() { Merchant = _CurrentRequestMerchant == 0 ? GlobalSettings.DefaultMerchant : _CurrentRequestMerchant };
 
 			await SendAndWaitForAck(message, connection).ConfigureAwait(false);
 
-			return (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
+			var retVal = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
+
+			if (retVal.Status == DeviceStatus.Busy)
+				throw new DeviceBusyException(String.IsNullOrWhiteSpace(retVal.Display) ? ErrorMessages.TerminalBusy : retVal.Display);
+
+			return retVal;
 		}
 
 		private async Task<PinpadConnection> ConnectAsync(string address, int port)
