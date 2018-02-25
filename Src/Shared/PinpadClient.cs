@@ -2,6 +2,7 @@ using Ladon;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,8 +81,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <exception cref="System.ArgumentException">Thrown if any property of <paramref name="requestMessage"/> is invalid.</exception>
 		/// <exception cref="TransactionFailureException">Thrown if a critical error occurred determining a transaction status and the user must be prompted to provide the result instead.</exception>
 		/// <exception cref="DeviceBusyException">Thrown if the device is already processing a request.</exception>
-		public async Task<TResponseMessage> ProcessRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage) 
-			where TRequestMessage : PosLinkRequestBase 
+		public async Task<TResponseMessage> ProcessRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage)
+			where TRequestMessage : PosLinkRequestBase
 			where TResponseMessage : PosLinkResponseBase
 		{
 			requestMessage.GuardNull(nameof(requestMessage));
@@ -142,7 +143,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					try
 					{
 						var pollResponse = await PollDeviceStatus(connection, retry == 0).ConfigureAwait(false); // If this is not the first attempt we just want to know the device is responding at all
-						//If we were only asked to poll, just return the response we already have.
+																																																		 //If we were only asked to poll, just return the response we already have.
 						if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll)
 							return (TResponseMessage)(PosLinkResponseBase)pollResponse;
 					}
@@ -164,7 +165,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					var retVal = await _CurrentReadTask.ConfigureAwait(false);
 					return (TResponseMessage)retVal;
 				}
-				catch (OperationCanceledException)
+				catch (DeviceBusyException)
 				{
 					retry++;
 				}
@@ -193,7 +194,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					catch (PosLinkNackException)
 					{
 						retries++;
-						if (_LastRequest == null || retries >= ProtocolConstants.MaxRetries)
+						if (_LastRequest == null || retries > ProtocolConstants.MaxRetries)
 							throw;
 
 						await Task.Delay(ProtocolConstants.ReadDelay_Milliseconds).ConfigureAwait(false);
@@ -292,7 +293,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return retVal;
 		}
 
-		private async Task SendAndWaitForAck(PosLinkRequestBase requestMessage, PinpadConnection connection) 
+		private async Task SendAndWaitForAck(PosLinkRequestBase requestMessage, PinpadConnection connection)
 		{
 			var retries = 0;
 			while (retries < ProtocolConstants.MaxRetries)
@@ -336,36 +337,81 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return retVal;
 		}
 
-		private async Task<PinpadConnection> ConnectAsync(string address, int port)
+		private Task<PinpadConnection> ConnectAsync(string address, int port)
 		{
 			lock (_Synchroniser)
 			{
-				if (_CurrentConnection != null) return _CurrentConnection;
+				if (_CurrentConnection != null) return Task.FromResult(_CurrentConnection);
 			}
 
 			var socket = new System.Net.Sockets.Socket(System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.IP);
 			try
 			{
-				//TODO: Change connect to async
-				socket.Connect(address, port);
-				var connection = new PinpadConnection()
-				{
-					Socket = socket
-				};
-				await connection.ClearInputBuffer().ConfigureAwait(false);
+				PinpadConnection connection = null;
+				var connectTcs = new System.Threading.Tasks.TaskCompletionSource<PinpadConnection>();
+				var args = new SocketAsyncEventArgs();
+				EventHandler<SocketAsyncEventArgs> socketConnectedHandler = null;
+				socketConnectedHandler = (EventHandler<SocketAsyncEventArgs>)
+				(
+					async (sender, e) =>
+					{
+						try
+						{
+							e.Completed -= socketConnectedHandler;
 
-				return _CurrentConnection = connection;
-			}
-			catch (System.Net.Sockets.SocketException sex)
-			{
-				if (ErrorCodeIndicatesBusy(sex.SocketErrorCode)) throw new DeviceBusyException(sex.Message, sex);
-				throw;
+							//Do not dispose 'e', doing so will close socket.
+
+							if (e.SocketError != SocketError.Success || !(e.ConnectSocket?.Connected ?? false))
+							{
+								if (ErrorCodeIndicatesBusy(e.SocketError))
+								{
+									var sex = new SocketException((int)e.SocketError);
+									connectTcs.TrySetException(new DeviceBusyException(sex.Message, sex));
+								}
+								else
+									connectTcs.TrySetException(new SocketException((int)e.SocketError));
+								return;
+							}
+
+							e.ConnectSocket.NoDelay = true;
+							connection = new PinpadConnection()
+							{
+								Socket = e.ConnectSocket
+							};
+
+							await connection.ClearInputBuffer().ConfigureAwait(false);
+
+							_CurrentConnection = connection;
+							connectTcs.TrySetResult(connection);
+						}
+						catch (Exception ex)
+						{
+							e.Dispose();
+							connectTcs.TrySetException(ex);
+						}
+					}
+				);
+
+				args.Completed += socketConnectedHandler;
+				args.RemoteEndPoint = GetSocketEndpoint(address, port);
+
+				socket.ConnectAsync(args);
+
+				return connectTcs.Task;
 			}
 			catch
 			{
 				socket?.Dispose();
 				throw;
 			}
+		}
+
+		private EndPoint GetSocketEndpoint(string address, int port)
+		{
+			if (IPAddress.TryParse(address, out var ipAddress))
+				return new IPEndPoint(ipAddress, port);
+
+			return new DnsEndPoint(address, port);
 		}
 
 		private static bool ErrorCodeIndicatesBusy(SocketError socketErrorCode)
