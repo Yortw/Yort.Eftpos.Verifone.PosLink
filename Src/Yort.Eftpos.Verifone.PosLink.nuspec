@@ -8,7 +8,7 @@
     <owners>Yortw</owners>
     <licenseUrl>https://github.com/Yortw/Yort.Eftpos.Verifone.PosLink/blob/master/README.md</licenseUrl>
     <projectUrl>https://github.com/Yortw/Yort.Eftpos.Verifone.PosLink/</projectUrl>
-    <iconUrl>https://github.com/Yortw/Yort.Eftpos.Verifone.PosLink/blob/master/Icon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/Yortw/Yort.Eftpos.Verifone.PosLink/master/Icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.Net implementation of the Verifone PosLink protocol for EFTPOS pinpads.</description>
     <summary>A 100% .Net implementation of the Verifone PosLink protocol for EFTPOS pinpads for performing POS EFTPOS transactions in NZ (and anywhere else supporting the same protocol).</summary>
