@@ -65,6 +65,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Poll, typeof(PollResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Purchase, typeof(PurchaseResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_QueryCard, typeof(QueryCardResponse));
+					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_Refund, typeof(RefundResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_ReprintLastReceipt, typeof(ReprintLastReceiptResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_SettlementCutover, typeof(SettlementCutoverResponse));
 					_MessageNameToTypeMap.TryAdd(ProtocolConstants.MessageType_SettlementEnquiry, typeof(SettlementEnquiryResponse));

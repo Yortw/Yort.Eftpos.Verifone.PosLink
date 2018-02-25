@@ -13,12 +13,6 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		private const string PinPadIP = "10.10.10.118";
 		private const int PinPadPort = 4444;
 
-		//TODO: Cash out
-		//TODO: Man Pan Purch
-		//TODO: Man Pan Refund
-		//TODO: Poll request
-		//TODO: Refund
-
 		[TestInitialize]
 		public void Initialize()
 		{
@@ -85,9 +79,105 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var request = new PurchaseRequest()
 			{
-				PurchaseAmount = 10.00M,
+				PurchaseAmount = 10.00M
 			};
 			var result = await client.ProcessRequest<PurchaseRequest, TransactionResponseBase>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Account: " + result.Account);
+			System.Diagnostics.Trace.WriteLine("Bank Ref: " + result.BankReference);
+			System.Diagnostics.Trace.WriteLine("Truncated Pan: " + result.TruncatedPan);
+			System.Diagnostics.Trace.WriteLine("Merchant Receipt:\r\n " + result.MerchantReceipt);
+			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result.CustomerReceipt);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanManPurchase()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new ManualPanPurchaseRequest()
+			{
+				PurchaseAmount = 10.00M
+			};
+			var result = await client.ProcessRequest<ManualPanPurchaseRequest, ManualPanPurchaseResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Account: " + result.Account);
+			System.Diagnostics.Trace.WriteLine("Bank Ref: " + result.BankReference);
+			System.Diagnostics.Trace.WriteLine("Truncated Pan: " + result.TruncatedPan);
+			System.Diagnostics.Trace.WriteLine("Merchant Receipt:\r\n " + result.MerchantReceipt);
+			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result.CustomerReceipt);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanRefund()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new RefundRequest()
+			{
+				RefundAmount = 10.00M
+			};
+			var result = await client.ProcessRequest<RefundRequest, RefundResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Account: " + result.Account);
+			System.Diagnostics.Trace.WriteLine("Bank Ref: " + result.BankReference);
+			System.Diagnostics.Trace.WriteLine("Truncated Pan: " + result.TruncatedPan);
+			System.Diagnostics.Trace.WriteLine("Merchant Receipt:\r\n " + result.MerchantReceipt);
+			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result.CustomerReceipt);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanManRefund()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new ManualPanRefundRequest()
+			{
+				RefundAmount = 10.00M
+			};
+			var result = await client.ProcessRequest<ManualPanRefundRequest, ManualPanRefundResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Account: " + result.Account);
+			System.Diagnostics.Trace.WriteLine("Bank Ref: " + result.BankReference);
+			System.Diagnostics.Trace.WriteLine("Truncated Pan: " + result.TruncatedPan);
+			System.Diagnostics.Trace.WriteLine("Merchant Receipt:\r\n " + result.MerchantReceipt);
+			System.Diagnostics.Trace.WriteLine("\r\nCustomer Receipt:\r\n " + result.CustomerReceipt);
+
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanCashOut()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			var request = new CashOutRequest()
+			{
+				CashAmount = 10.00M
+			};
+			var result = await client.ProcessRequest<CashOutRequest, CashOutResponse>(request).ConfigureAwait(false);
 
 			Assert.IsNotNull(result);
 			System.Diagnostics.Trace.WriteLine("Status: " + result.Response);
@@ -179,7 +269,6 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 			Assert.IsFalse(String.IsNullOrWhiteSpace(result.ReceiptData));
 		}
-
 
 		[TestCategory("Integration")]
 		[TestMethod]
