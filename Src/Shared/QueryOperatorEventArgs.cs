@@ -13,6 +13,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	public class QueryOperatorEventArgs : EventArgs
 	{
 
+		private readonly string _MerchantReference;
 		private readonly string _Prompt;
 		private readonly string _ReceiptText;
 
@@ -23,17 +24,24 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Full constructor.
 		/// </summary>
+		/// <param name="merchantReference">The merchant reference of the transaction this dialog relates to, if any.</param>
 		/// <param name="prompt">The text of the prompt to be displayed to the operator.</param>
 		/// <param name="receiptText">The text of a receipt to print when the prompt is displayed, if any, such as a signature receipt.</param>
 		/// <param name="allowedResponses">A list of strings containing the allowed responses from the operator.</param>
-		public QueryOperatorEventArgs(string prompt, string receiptText, IReadOnlyList<string> allowedResponses)
+		public QueryOperatorEventArgs(string merchantReference, string prompt, string receiptText, IReadOnlyList<string> allowedResponses)
 		{
+			_MerchantReference = merchantReference;
 			_Prompt = prompt;
 			_ReceiptText = receiptText;
 			_AllowedResponses = allowedResponses;
 
 			_ResponseCompletionSource = new System.Threading.Tasks.TaskCompletionSource<string>();
 		}
+
+		/// <summary>
+		/// The merchant reference of the transaction this dialog relates to, if any.
+		/// </summary>
+		public string MerchantReference { get { return _MerchantReference; } }
 
 		/// <summary>
 		/// The text of the prompt to be displayed to the operator.

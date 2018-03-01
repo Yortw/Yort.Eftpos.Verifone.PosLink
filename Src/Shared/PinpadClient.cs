@@ -101,7 +101,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			try
 			{
-				OnDisplayMessage(new DisplayMessage(StatusMessages.Connecting, DisplayMessageSource.Library));
+				OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.Connecting, DisplayMessageSource.Library));
 				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 				{
 					return await SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection).ConfigureAwait(false);
@@ -131,7 +131,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					//a task reading incoming data. Cancellation is the only request 
 					//we should process while another request is being processed.
 					_LastRequest = requestMessage;
-					OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
+					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.SendingRequest, DisplayMessageSource.Library));
 					await _Writer.WriteMessageAsync<TRequestMessage>(requestMessage, connection.OutStream).ConfigureAwait(false);
 				}
 				else
@@ -139,7 +139,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					if (retry == 0)
 						_CurrentRequestMerchant = requestMessage.Merchant;
 
-					OnDisplayMessage(new DisplayMessage(StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
+					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
 					try
 					{
 						var pollResponse = await PollDeviceStatus(connection, retry == 0).ConfigureAwait(false); // If this is not the first attempt we just want to know the device is responding at all
@@ -152,13 +152,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 						throw new TransactionFailureException(ErrorMessages.TransactionFailure, dbe);
 					}
 
-					OnDisplayMessage(new DisplayMessage(StatusMessages.SendingRequest, DisplayMessageSource.Library));
+					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.SendingRequest, DisplayMessageSource.Library));
 					await SendAndWaitForAck(requestMessage, connection).ConfigureAwait(false);
 				}
 
 				try
 				{
-					OnDisplayMessage(new DisplayMessage(StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
+					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
 					if (_CurrentReadTask == null)
 						_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(connection);
 
@@ -209,7 +209,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				switch (message.MessageType)
 				{
 					case ProtocolConstants.MessageType_Display:
-						OnDisplayMessage(new DisplayMessage(((DisplayMessageResponse)message).MessageText, DisplayMessageSource.Pinpad));
+						OnDisplayMessage(new DisplayMessage(message.MerchantReference, ((DisplayMessageResponse)message).MessageText, DisplayMessageSource.Pinpad));
 						break;
 
 					case ProtocolConstants.MessageType_Ask:
@@ -282,7 +282,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			GlobalSettings.Logger.LogInfo(String.Format(LogMessages.QueryOperator, merchantReference, prompt, receiptText, String.Join(", ", allowedResponses)));
 
-			var eventArgs = new QueryOperatorEventArgs(prompt, receiptText, allowedResponses);
+			var eventArgs = new QueryOperatorEventArgs(merchantReference, prompt, receiptText, allowedResponses);
 			if (QueryOperator == null) throw new InvalidOperationException(ErrorMessages.NoHandlerForQueryOperatorConnected);
 
 			QueryOperator?.Invoke(this, eventArgs);
