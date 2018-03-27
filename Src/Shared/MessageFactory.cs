@@ -82,7 +82,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			var constructor = GetConstructorForResponseMessage(type);
 
-			if (constructor == null) throw new InvalidOperationException(String.Format(ErrorMessages.ResponseMessageTypeDoesNotContainRequiredConstructor, type.FullName));
+			if (constructor == null) throw new InvalidOperationException(String.Format(System.Globalization.CultureInfo.CurrentCulture, ErrorMessages.ResponseMessageTypeDoesNotContainRequiredConstructor, type.FullName));
 			return (PosLinkResponseBase)constructor.Invoke(new object[] { fieldValues });
 		}
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Yort.Eftpos.Verifone.PosLink
@@ -11,7 +12,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <para>This error is thrown when a final response message (i.e not an ASK, DSP or SIG message) is received and the message type does not match the request type. For example if you sent a logon message but a terminal totals response was received instead.
 	/// Typically this indicates accidental re-use of a <see cref="PosLinkRequestBase.MerchantReference"/> value.</para>
 	/// </remarks>
-	public class UnexpectedResponseException : PosLinkProtocolException
+#if SUPPORTS_SERIALIZATION
+		[Serializable]
+#endif
+	public sealed class UnexpectedResponseException : PosLinkProtocolException
 	{
 		private readonly PosLinkResponseBase _Response;
 
@@ -55,5 +59,27 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			get { return _Response; }
 		}
+
+#if SUPPORTS_SERIALIZATION
+
+		/// <summary>
+		/// Assists with serialisation of this exception.
+		/// </summary>
+		/// <param name="info">The serialization information used to deserialise the exception.</param>
+		/// <param name="context">The streaming context used to deserialise the exception.</param>
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			base.GetObjectData(info, context);
+		}
+
+		/// <summary>
+		/// Deserialisation constructor.
+		/// </summary>
+		/// <param name="info">The serialization information used to deserialise the exception.</param>
+		/// <param name="context">The streaming context used to deserialise the exception.</param>
+		private UnexpectedResponseException(
+		System.Runtime.Serialization.SerializationInfo info,
+		System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+#endif
 	}
 }

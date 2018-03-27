@@ -331,7 +331,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			var retVal = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
 
-			if (retVal.Status == DeviceStatus.Busy)
+			if (throwIfBusy && retVal.Status == DeviceStatus.Busy)
 				throw new DeviceBusyException(String.IsNullOrWhiteSpace(retVal.Display) ? ErrorMessages.TerminalBusy : retVal.Display);
 
 			return retVal;
@@ -406,7 +406,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private EndPoint GetSocketEndpoint(string address, int port)
+		private static EndPoint GetSocketEndpoint(string address, int port)
 		{
 			if (IPAddress.TryParse(address, out var ipAddress))
 				return new IPEndPoint(ipAddress, port);

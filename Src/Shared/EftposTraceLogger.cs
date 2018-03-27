@@ -51,7 +51,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <seealso cref="LogRx(string, byte[], int)"/>
 		public void LogError(string message, Exception exception)
 		{
-			System.Diagnostics.Trace.WriteLine(message + Environment.NewLine + exception.ToString(), Category_Error);
+			System.Diagnostics.Trace.WriteLine(message + Environment.NewLine + exception?.ToString(), Category_Error);
 		}
 
 		/// <summary>
@@ -86,6 +86,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public void LogTx(string message, System.IO.Stream stream)
 		{
 			if (!LogCommunicationPackets) return;
+			if (stream == null) return;
 
 			using (var buffer = GlobalSettings.BufferManager.GetBuffer())
 			{
@@ -119,7 +120,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="exception">An exception that caused this warning.</param>
 		public void LogWarn(string message, Exception exception)
 		{
-			System.Diagnostics.Trace.WriteLine(message + Environment.NewLine + exception.ToString(), Category_Warning);
+			System.Diagnostics.Trace.WriteLine(message + Environment.NewLine + exception?.ToString(), Category_Warning);
 		}
 
 		private static string BytesToHex(byte[] data, int dataLength)
