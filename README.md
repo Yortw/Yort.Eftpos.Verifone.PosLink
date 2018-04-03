@@ -9,7 +9,7 @@ This project is still untested/in development. Check back later.
 
 # Status
 
-[![Build status](https://ci.appveyor.com/api/projects/status/f4e33as09yx0lsn4?svg=true)](https://ci.appveyor.com/project/Yortw/Yort-Eftpos-Verifone-PosLink) [![NuGet Badge](https://buildstats.info/nuget/Yort.Eftpos.Verifone.PosLink)](https://www.nuget.org/packages/Yort.Eftpos.Verifone.PosLink/) [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Yortw/Yort.Eftpos.Verifone.PosLink/blob/master/LICENSE.md) 
+[![Build status](https://ci.appveyor.com/api/projects/status/igna2bbereqn8qff?svg=true)](https://ci.appveyor.com/project/Yortw/yort-eftpos-verifone-poslink) [![NuGet Badge](https://buildstats.info/nuget/Yort.Eftpos.Verifone.PosLink)](https://www.nuget.org/packages/Yort.Eftpos.Verifone.PosLink/) [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Yortw/Yort.Eftpos.Verifone.PosLink/blob/master/LICENSE.md) 
 
 ## Supported Platforms
 
