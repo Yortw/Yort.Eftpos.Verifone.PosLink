@@ -153,6 +153,9 @@
   <data name="ReceivedPacket" xml:space="preserve">
     <value>Received packet</value>
   </data>
+  <data name="RetryRequest" xml:space="preserve">
+    <value>Retry Request {0}: {1}</value>
+  </data>
   <data name="SendingPacket" xml:space="preserve">
     <value>Sending packet</value>
   </data>

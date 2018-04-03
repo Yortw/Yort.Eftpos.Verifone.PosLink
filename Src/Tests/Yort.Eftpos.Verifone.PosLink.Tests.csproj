@@ -53,6 +53,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IntegrationTests.cs" />
@@ -66,6 +67,10 @@
     <ProjectReference Include="..\NetStandard20\Yort.Eftpos.Verifone.PosLink.NetStandard20.csproj">
       <Project>{a93dffd3-1155-45b1-a546-cd6c579cfbc9}</Project>
       <Name>Yort.Eftpos.Verifone.PosLink.NetStandard20</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WinForms\Yort.Eftpos.Verifone.PosLink.WinForms.csproj">
+      <Project>{be5aa007-4c29-4269-a5c1-7bd68e48ade3}</Project>
+      <Name>Yort.Eftpos.Verifone.PosLink.WinForms</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

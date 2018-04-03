@@ -24,7 +24,6 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		public async Task Integration_CanLogon()
 		{
 			var client = new PinpadClient(PinPadIP, PinPadPort);
-
 			var request = new LogonRequest();
 			var result = await client.ProcessRequest<LogonRequest, LogonResponse>(request).ConfigureAwait(false);
 

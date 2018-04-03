@@ -117,52 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DisplayMessage" xml:space="preserve">
-    <value>Display Message ({0}): {1}</value>
-  </data>
-  <data name="ErrorInDisplayMessageEvent" xml:space="preserve">
-    <value>An error occurred raising the DisplayMessage event.</value>
-  </data>
-  <data name="ErrorReceivingMessage" xml:space="preserve">
-    <value>Error receiving message:</value>
-  </data>
-  <data name="ErrorSendingMessage" xml:space="preserve">
-    <value>Error sending message:</value>
-  </data>
-  <data name="NoResponseFromDevice" xml:space="preserve">
-    <value>No response from device, will report as busy.</value>
-  </data>
-  <data name="ProcessRequest" xml:space="preserve">
-    <value>Process Request {0}: {1}</value>
-  </data>
-  <data name="QueryOperator" xml:space="preserve">
-    <value>Query Operator ({0}): {1}\r\n{2}\r\n{3}</value>
-  </data>
-  <data name="QueryOperatorResponse" xml:space="preserve">
-    <value>Query Operator Response ({0}): {1}</value>
-  </data>
-  <data name="ReceivedAck" xml:space="preserve">
-    <value>Received ACK</value>
-  </data>
-  <data name="ReceivedInvalidMessage" xml:space="preserve">
-    <value>Received an invalid packet:</value>
-  </data>
-  <data name="ReceivedNack" xml:space="preserve">
-    <value>Received NACK</value>
-  </data>
-  <data name="ReceivedPacket" xml:space="preserve">
-    <value>Received packet</value>
-  </data>
-  <data name="RetryRequest" xml:space="preserve">
-    <value>Retry Request {0}: {1}</value>
-  </data>
-  <data name="SendingPacket" xml:space="preserve">
-    <value>Sending packet</value>
-  </data>
-  <data name="SendingRequest" xml:space="preserve">
-    <value>Sending request: {0} {1}</value>
-  </data>
-  <data name="UnknownMessageTypeReceived" xml:space="preserve">
-    <value>Unknown message type of '{0}' received.</value>
-  </data>
+  <metadata name="dialogAdapterBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

@@ -136,7 +136,7 @@
     <value>Process Request {0}: {1}</value>
   </data>
   <data name="QueryOperator" xml:space="preserve">
-    <value>Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n{4}</value>
+    <value>Query Operator ({0}): {1}\r\n{2}\r\n{3}</value>
   </data>
   <data name="QueryOperatorResponse" xml:space="preserve">
     <value>Query Operator Response ({0}): {1}</value>
@@ -152,6 +152,9 @@
   </data>
   <data name="ReceivedPacket" xml:space="preserve">
     <value>Received packet</value>
+  </data>
+  <data name="RetryRequest" xml:space="preserve">
+    <value>Retry Request {0}: {1}</value>
   </data>
   <data name="SendingPacket" xml:space="preserve">
     <value>Sending packet</value>

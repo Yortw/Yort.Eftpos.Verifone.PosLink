@@ -115,7 +115,7 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Query Operator ({0}): {1}\r\n{2}\r\n{3}\r\n{4}.
+        ///   Looks up a localized string similar to Query Operator ({0}): {1}\r\n{2}\r\n{3}.
         /// </summary>
         internal static string QueryOperator {
             get {
@@ -165,6 +165,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         internal static string ReceivedPacket {
             get {
                 return ResourceManager.GetString("ReceivedPacket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry Request {0}: {1}.
+        /// </summary>
+        internal static string RetryRequest {
+            get {
+                return ResourceManager.GetString("RetryRequest", resourceCulture);
             }
         }
         

@@ -17,6 +17,7 @@ Currently;
 
 * .Net Standard 2.0
     * Includes Xamarin.iOS, Xamarin.Android, .Net Core 2.0 and .Net 4.71
+* .Net 4.5
 * UWP 10+ (Windows 10 Universal Programs, v10240 and up)
 
 # Getting Started

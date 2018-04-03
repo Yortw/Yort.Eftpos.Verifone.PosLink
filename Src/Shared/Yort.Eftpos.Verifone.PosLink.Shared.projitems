@@ -12,7 +12,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)BufferManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EftposNullLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IBufferManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDialogAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IEftposLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IPinpadClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PrintRequestedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AskResponse.cs" />

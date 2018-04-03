@@ -15,8 +15,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <remarks>
 	/// <para>Send requests (and receive responses) voa the <see cref="ProcessRequest{TRequest, TResponse}(TRequest)"/> method.</para>
 	/// </remarks>
-	public class PinpadClient
+	/// <seealso cref="IPinpadClient"/>
+	public class PinpadClient : IPinpadClient
 	{
+
+		#region Fields
+
 		private readonly string _Address;
 		private readonly int _Port;
 
@@ -28,6 +32,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private Task<PosLinkResponseBase> _CurrentReadTask;
 		private PosLinkRequestBase _LastRequest;
 		private int _CurrentRequestMerchant;
+
+		#endregion
+
+		#region Events
 
 		/// <summary>
 		/// Raised when there is an information prompt or status change that should be displayed to the user.
@@ -43,6 +51,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <para>This event may be raised from background threads, any code updating UI may need to invoke to the UI thread.</para>
 		/// </remarks>
 		public event EventHandler<QueryOperatorEventArgs> QueryOperator;
+
+		#endregion
+
+		#region Constructors
 
 		/// <summary>
 		/// Partial constructor.
@@ -70,8 +82,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 			_Reader = new MessageReader();
 		}
 
+		#endregion
+
+		#region Public Methods
+
 		/// <summary>
-		/// Sends a request to the pind pad and returns the response.
+		/// Sends a request to the pin pad and returns the response. If the device is already busy or processing a request, throws a <see cref="DeviceBusyException"/>.
 		/// </summary>
 		/// <typeparam name="TRequestMessage">The type of request to send.</typeparam>
 		/// <typeparam name="TResponseMessage">The type of response expected.</typeparam>
@@ -80,7 +96,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="requestMessage"/> message is null, or if any required property of the request is null.</exception>
 		/// <exception cref="System.ArgumentException">Thrown if any property of <paramref name="requestMessage"/> is invalid.</exception>
 		/// <exception cref="TransactionFailureException">Thrown if a critical error occurred determining a transaction status and the user must be prompted to provide the result instead.</exception>
-		/// <exception cref="DeviceBusyException">Thrown if the device is already processing a request.</exception>
+		/// <exception cref="DeviceBusyException">Thrown if the device is already processing a request or does not respond to the request.</exception>
 		public async Task<TResponseMessage> ProcessRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage)
 			where TRequestMessage : PosLinkRequestBase
 			where TResponseMessage : PosLinkResponseBase
@@ -104,7 +120,55 @@ namespace Yort.Eftpos.Verifone.PosLink
 				OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.Connecting, DisplayMessageSource.Library));
 				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 				{
-					return await SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection).ConfigureAwait(false);
+					return await SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection, true).ConfigureAwait(false);
+				}
+			}
+			finally
+			{
+				lock (_Synchroniser)
+				{
+					_CurrentReadTask = null;
+					_CurrentConnection = null;
+					_CurrentRequestMerchant = 0;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Sends a request to the pin pad and returns the response. Intended to be used for retrying requests that have already been sent, does not check if the pinpad is already busy.
+		/// </summary>
+		/// <typeparam name="TRequestMessage">The type of request to send.</typeparam>
+		/// <typeparam name="TResponseMessage">The type of response expected.</typeparam>
+		/// <param name="requestMessage">The request message to be sent.</param>
+		/// <returns>A instance of {TResponseMessage} containing the pin pad response.</returns>
+		/// <exception cref="System.ArgumentNullException">Thrown if <paramref name="requestMessage"/> message is null, or if any required property of the request is null.</exception>
+		/// <exception cref="System.ArgumentException">Thrown if any property of <paramref name="requestMessage"/> is invalid.</exception>
+		/// <exception cref="TransactionFailureException">Thrown if a critical error occurred determining a transaction status and the user must be prompted to provide the result instead.</exception>
+		/// <exception cref="DeviceBusyException">Thrown if the device does not respond to the request.</exception>
+		public async Task<TResponseMessage> RetryRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage)
+			where TRequestMessage : PosLinkRequestBase
+			where TResponseMessage : PosLinkResponseBase
+		{
+			requestMessage.GuardNull(nameof(requestMessage));
+			requestMessage.Validate();
+
+			GlobalSettings.Logger.LogInfo(String.Format(LogMessages.RetryRequest, requestMessage.MerchantReference, requestMessage.RequestType));
+
+			PinpadConnection existingConnection = null;
+			lock (_Synchroniser)
+			{
+				if (_CurrentConnection != null && requestMessage.RequestType != ProtocolConstants.MessageType_Cancel)
+					throw new DeviceBusyException();
+
+				existingConnection = _CurrentConnection;
+			}
+
+			try
+			{
+				OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.Connecting, DisplayMessageSource.Library));
+				using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
+				{
+					return await SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection, false).ConfigureAwait(false);
 				}
 			}
 			finally
@@ -118,7 +182,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private async Task<TResponseMessage> SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage, PinpadConnection existingConnection, PinpadConnection connection)
+		#endregion
+
+		#region Private Methods
+
+		private async Task<TResponseMessage> SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage, PinpadConnection existingConnection, PinpadConnection connection, bool isNewRequest)
 			where TRequestMessage : PosLinkRequestBase
 			where TResponseMessage : PosLinkResponseBase
 		{
@@ -139,17 +207,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 					if (retry == 0)
 						_CurrentRequestMerchant = requestMessage.Merchant;
 
-					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
-					try
+					if (isNewRequest)
 					{
-						var pollResponse = await PollDeviceStatus(connection, retry == 0).ConfigureAwait(false); // If this is not the first attempt we just want to know the device is responding at all
-																																																		 //If we were only asked to poll, just return the response we already have.
+						var pollResponse = await CheckDeviceNotBusy(connection, retry, requestMessage).ConfigureAwait(false);
 						if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll)
 							return (TResponseMessage)(PosLinkResponseBase)pollResponse;
-					}
-					catch (DeviceBusyException dbe)
-					{
-						throw new TransactionFailureException(ErrorMessages.TransactionFailure, dbe);
 					}
 
 					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.SendingRequest, DisplayMessageSource.Library));
@@ -174,6 +236,22 @@ namespace Yort.Eftpos.Verifone.PosLink
 			//After max retries we still got no response
 			//See POS Link spec 2.2, page 45, Messaging Timeouts section.
 			throw new TransactionFailureException(ErrorMessages.TransactionFailure);
+		}
+
+		private async Task<PollResponse> CheckDeviceNotBusy<TRequestMessage>(PinpadConnection connection, int retry, TRequestMessage requestMessage) where TRequestMessage : PosLinkRequestBase
+		{
+			try
+			{
+				OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.CheckingDeviceStatus, DisplayMessageSource.Library));
+				return await PollDeviceStatus(connection, retry == 0 && typeof(TRequestMessage) != typeof(PollRequest)).ConfigureAwait(false); // If this is not the first attempt we just want to know the device is responding at all
+																																																 //If we were only asked to poll, just return the response we already have.
+			}
+			catch (DeviceBusyException dbe)
+			{
+				if (retry == 0) throw;
+
+				throw new TransactionFailureException(ErrorMessages.TransactionFailure, dbe);
+			}
 		}
 
 		private async Task<PosLinkResponseBase> ReadUntilFinalResponse<TResponseMessage>(PinpadConnection connection) where TResponseMessage : PosLinkResponseBase
@@ -332,7 +410,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var retVal = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
 
 			if (throwIfBusy && retVal.Status == DeviceStatus.Busy)
-				throw new DeviceBusyException(String.IsNullOrWhiteSpace(retVal.Display) ? ErrorMessages.TerminalBusy : retVal.Display);
+				throw new DeviceBusyException(ErrorMessages.TerminalBusy);
 
 			return retVal;
 		}
@@ -421,5 +499,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 				|| socketErrorCode == SocketError.InProgress
 				|| socketErrorCode == SocketError.IsConnected;
 		}
+
+		#endregion
+
 	}
 }

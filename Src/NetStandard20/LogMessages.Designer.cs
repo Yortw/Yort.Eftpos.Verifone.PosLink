@@ -169,6 +169,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retry Request {0}: {1}.
+        /// </summary>
+        internal static string RetryRequest {
+            get {
+                return ResourceManager.GetString("RetryRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sending packet.
         /// </summary>
         internal static string SendingPacket {
