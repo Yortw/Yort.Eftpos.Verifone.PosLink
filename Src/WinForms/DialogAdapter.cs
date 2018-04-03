@@ -36,6 +36,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private bool _HaveCancelled;
 		private bool _CanCancel;
+		private bool _QuietMode;
 
 		private QueryOperatorEventArgs _PendingQuery;
 		private string _LastPromptMerchantReference;
@@ -63,12 +64,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </summary>
 		/// <param name="client">The <see cref="PinpadClient"/> to handle UI prompts for.</param>
 		/// <param name="windowOwner">A <see cref="IWin32Window"/> that will be used as the parent of the dialogs shown.</param>
-		public DialogAdapter(PinpadClient client, IWin32Window windowOwner)
+		/// <param name="quietMode">If true no informational dialog is shown, dialogs will only be shown if the user needs to respond to a prompt (SIG/ASK messages).</param>
+		public DialogAdapter(PinpadClient client, IWin32Window windowOwner, bool quietMode)
 		{
 			if (client == null) throw new ArgumentNullException(nameof(client));
 
 			_Client = client;
 			_Dialog = new PosLinkDialog();
+			_QuietMode = quietMode;
 			_WindowOwner = windowOwner;
 			_Font = new Font(_Dialog.Font.FontFamily, 20);
 			_BackgroundColour = System.Drawing.SystemColors.Window;
@@ -234,6 +237,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)
 		{
+			if (_QuietMode) return;
+
 			if (_Dialog.InvokeRequired)
 			{
 				_Dialog.Invoke(new Action<object, DisplayMessageEventArgs>(this.Client_DisplayMessage), sender, e);
