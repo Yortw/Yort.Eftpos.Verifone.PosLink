@@ -163,7 +163,7 @@
     <value>Communication with EFTPOS device has been interrupted. Check terminal for transaction result.</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
-    <value>An unexpected response was received from the pin pad. The request and response types do not match.</value>
+    <value>An unexpected response was received from the pin pad. The request and response types and/or id's do not match.</value>
   </data>
   <data name="UnknownMessageFieldFormat" xml:space="preserve">
     <value>Unknown or unsupported message field type.</value>

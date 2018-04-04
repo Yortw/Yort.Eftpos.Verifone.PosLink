@@ -122,6 +122,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 				{
 					return await SendAndWaitForResponseWithRetriesAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection, true).ConfigureAwait(false);
 				}
+
+				//TODO: Retry on (IO?) exception reading from stream? Reconnect?
 			}
 			finally
 			{
@@ -222,7 +224,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 				{
 					OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.WaitingForResponse, DisplayMessageSource.Library));
 					if (_CurrentReadTask == null)
-						_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(connection);
+						_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(requestMessage.MerchantReference, connection);
 
 					var retVal = await _CurrentReadTask.ConfigureAwait(false);
 					return (TResponseMessage)retVal;
@@ -254,7 +256,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private async Task<PosLinkResponseBase> ReadUntilFinalResponse<TResponseMessage>(PinpadConnection connection) where TResponseMessage : PosLinkResponseBase
+		private async Task<PosLinkResponseBase> ReadUntilFinalResponse<TResponseMessage>(string requestReference, PinpadConnection connection) where TResponseMessage : PosLinkResponseBase
 		{
 			TResponseMessage retVal = null;
 			while (retVal == null)
@@ -281,6 +283,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 					}
 				}
 
+				//Poll is an exception because it's id is always XXXXXX apparently.
+				if (message.MerchantReference != requestReference && message.MessageType != ProtocolConstants.MessageType_Poll) throw new UnexpectedResponseException(message);
+
 				retVal = message as TResponseMessage;
 				if (retVal != null) break;
 
@@ -301,6 +306,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 					case ProtocolConstants.MessageType_Error:
 						var errorResponse = message as ErrorResponse;
 						throw new PosLinkProtocolException(errorResponse.Display, errorResponse.Response);
+
+					case ProtocolConstants.MessageType_Poll: //If we got a poll response, that's cool, but just keep waiting for something to do
+						break;
 
 					default:
 						throw new UnexpectedResponseException(message);
@@ -407,7 +415,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			await SendAndWaitForAck(message, connection).ConfigureAwait(false);
 
-			var retVal = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(connection).ConfigureAwait(false));
+			var retVal = (PollResponse)(await ReadUntilFinalResponse<PollResponse>(message.MerchantReference, connection).ConfigureAwait(false));
 
 			if (throwIfBusy && retVal.Status == DeviceStatus.Busy)
 				throw new DeviceBusyException(ErrorMessages.TerminalBusy);

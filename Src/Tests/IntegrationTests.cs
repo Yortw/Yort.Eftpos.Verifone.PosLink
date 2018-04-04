@@ -199,7 +199,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
-
+	
 		[TestCategory("Integration")]
 		[TestMethod]
 		public async Task Integration_CanCashOut()

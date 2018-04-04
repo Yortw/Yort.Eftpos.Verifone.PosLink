@@ -205,7 +205,7 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unexpected response was received from the pin pad. The request and response types do not match..
+        ///   Looks up a localized string similar to An unexpected response was received from the pin pad. The request and response types and/or id&apos;s do not match..
         /// </summary>
         internal static string UnexpectedResponse {
             get {

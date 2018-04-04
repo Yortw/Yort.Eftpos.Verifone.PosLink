@@ -114,7 +114,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 						await sendAckTask.ConfigureAwait(false);
 						
-						if (message == null)
+						if (message == null) // Spec says ignore messages of unknown type to allow for future upgrades
 							GlobalSettings.Logger.LogWarn(String.Format(LogMessages.UnknownMessageTypeReceived, fieldValues[1]));
 					}
 					catch (PosLinkProtocolException ex)
@@ -157,12 +157,19 @@ namespace Yort.Eftpos.Verifone.PosLink
 			{
 				cancelTokenSource.CancelAfter(ProtocolConstants.Timeout_ReadResponse_Milliseconds);
 
+				cancelTokenSource.Token.Register(() =>
+				{
+					System.Diagnostics.Debug.WriteLine("Cancelled");
+				});
+
 				try
 				{
 					DataBuffer retVal = null;
 					while (retVal == null)
 					{
-						retVal = await ReadData(inStream, ProtocolConstants.MaxBufferSize_Read, cancelTokenSource.Token).ConfigureAwait(false);
+						var t = ReadData(inStream, ProtocolConstants.MaxBufferSize_Read, cancelTokenSource.Token);
+						
+						retVal = await t.ConfigureAwait(false);
 						if (retVal?.Length == 1)
 						{
 							if (retVal.Bytes[0] == ProtocolConstants.ControlByte_Ack)
