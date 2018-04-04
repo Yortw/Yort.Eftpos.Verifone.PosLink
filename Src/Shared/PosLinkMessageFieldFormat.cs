@@ -27,6 +27,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeCasedCorrectly", MessageId = "Datedd")]
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "MM")]
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeCasedCorrectly", MessageId = "Myyyy")]
-		DateddMMyyyy
+		DateddMMyyyy,
+		/// <summary>
+		/// Left justified text padded to it's maximum length with spaces.
+		/// </summary>
+		TextRightPadded
 	}
 }

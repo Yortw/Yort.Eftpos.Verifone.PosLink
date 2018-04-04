@@ -183,7 +183,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					break;
 
 				case PosLinkMessageFieldFormat.ZeroPaddedNumber:
-					retVal = ((decimal)value).ToString("#0.00").PadLeft(field.MaxLength, '0');
+					retVal = ((decimal)value).ToString("#0.00", System.Globalization.CultureInfo.InvariantCulture).PadLeft(field.MaxLength, '0');
 					break;
 
 				case PosLinkMessageFieldFormat.DateddMMyyyy:
@@ -191,8 +191,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 						retVal = String.Empty;
 					else
 						retVal = ((DateTime)value).ToString("ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture);
-
 					break;
+
+				case PosLinkMessageFieldFormat.TextRightPadded:
+					retVal = value.ToString().PadRight(field.MaxLength, ' ');
+					break;
+
 				default:
 					throw new InvalidOperationException(ErrorMessages.UnknownMessageFieldFormat);
 			}

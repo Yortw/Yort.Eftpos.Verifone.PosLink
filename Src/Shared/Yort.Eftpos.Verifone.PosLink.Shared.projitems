@@ -10,6 +10,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BufferManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipBatchUploadRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipBatchUploadResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipVoidResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipVoidRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipAddResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipAddRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipPreauthManualPanRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipPreauthManualPanResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipPreauthResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TipPreauthRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChequeAuthorisationRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChequeAuthorisationResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EftposNullLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IBufferManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDialogAdapter.cs" />
