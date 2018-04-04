@@ -30,53 +30,57 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// The purchase value originally requested.
 		/// </summary>
-		public decimal PurchaseAmount { get { return Convert.ToDecimal(Fields[3], System.Globalization.CultureInfo.InvariantCulture); } }
+		public decimal PurchaseAmount { get { return this.MessageType != ProtocolConstants.MessageType_CashOnly ? Convert.ToDecimal(Fields[3], System.Globalization.CultureInfo.InvariantCulture) : 0; } }
 
 		/// <summary>
 		/// The amount of cash out originally requested.
 		/// </summary>
-		public decimal CashAmount { get { return Convert.ToDecimal(Fields[4], System.Globalization.CultureInfo.InvariantCulture); } }
+		public decimal CashAmount { get { return this.MessageType == ProtocolConstants.MessageType_ManualPanPurchase ? 0 : Convert.ToDecimal(Fields[GetIndex(4)], System.Globalization.CultureInfo.InvariantCulture); } }
 
 		/// <summary>
 		/// The response code of the transaction.
 		/// </summary>
 		/// <seealso cref="ResponseCodes"/>
-		public string Response { get { return Fields[5]; } }
+		public string Response { get { return Fields[GetIndex(5)]; } }
 
 		/// <summary>
 		/// Any text to be displayed to the user.
 		/// </summary>
-		public string Display { get { return Fields[6]; } }
+		public string Display { get { return Fields[GetIndex(6)]; } }
 
 		/// <summary>
 		/// The reference for this transaction provided by the bank/payment gateway.
 		/// </summary>
-		public string BankReference { get { return Fields[7]; } }
+		public string BankReference { get { return Fields[GetIndex(7)]; } }
 
 		/// <summary>
 		/// The System Trace Audit Number returned by the pin pad, unique per device transaction.
 		/// </summary>
-		public string Stan { get { return Fields[8]; } }
+		public string Stan { get { return Fields[GetIndex(8)]; } }
 
 		/// <summary>
 		/// The truncated card number returned by the device.
 		/// </summary>
-		public string TruncatedPan { get { return Fields[9]; } }
+		public string TruncatedPan { get { return Fields[GetIndex(9)]; } }
 
 		/// <summary>
 		/// The type of account used with the card.
 		/// </summary>
-		public string Account { get { return Fields[10]; } }
+		public string Account { get { return Fields[GetIndex(10)]; } }
 
 		/// <summary>
 		/// The merchant receipt text, if any, that must be printed.
 		/// </summary>
-		public string MerchantReceipt { get { return FieldValueOrNull(11); } }
+		public string MerchantReceipt { get { return FieldValueOrNull(GetIndex(11)); } }
 		/// <summary>
 		/// The customer receipt text, if any, that may be optionally printed.
 		/// </summary>
-		public string CustomerReceipt { get { return FieldValueOrNull(12); } }
+		public string CustomerReceipt { get { return FieldValueOrNull(GetIndex(12)); } }
 
+		private int GetIndex(int rawIndex)
+		{
+			return this.MessageType == ProtocolConstants.MessageType_Purchase ? rawIndex : rawIndex - 1;
+		}
 
 	}
 }

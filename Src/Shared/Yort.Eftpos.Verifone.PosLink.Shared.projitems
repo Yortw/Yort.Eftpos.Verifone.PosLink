@@ -53,7 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IMerchantReferenceGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogonResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CashOnlyPurchaseResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CashOutResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MessageFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MessageReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MessageWriter.cs" />
