@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Yort.Eftpos.Verifone.PosLink.Tests
 {
+#if !TESTS_INTEGRATION
+	[Ignore]	
+#endif
 	[TestClass]
 	public class IntegrationTests
 	{

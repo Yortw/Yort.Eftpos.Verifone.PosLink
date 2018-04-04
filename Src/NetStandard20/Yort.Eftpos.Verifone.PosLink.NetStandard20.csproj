@@ -9,7 +9,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Yort.Eftpos.Verifone.PosLink.xml</DocumentationFile>
-    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_TRACE;SUPPORTS_MSGETBUFFER</DefineConstants>
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_TRACE;SUPPORTS_MSGETBUFFER;RELEASE;NETSTANDARD2_0;TESTS_INTEGRATION</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
