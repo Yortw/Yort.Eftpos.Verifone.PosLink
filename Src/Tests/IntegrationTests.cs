@@ -209,7 +209,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var request = new CashOutRequest()
 			{
-				CashAmount = 10.00M
+				CashAmount = 10M
 			};
 			var result = await client.ProcessRequest<CashOutRequest, CashOutResponse>(request).ConfigureAwait(false);
 

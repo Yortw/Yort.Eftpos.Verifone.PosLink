@@ -183,7 +183,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					break;
 
 				case PosLinkMessageFieldFormat.ZeroPaddedNumber:
-					retVal = value.ToString().PadLeft(field.MaxLength, '0');
+					retVal = ((decimal)value).ToString("#0.00").PadLeft(field.MaxLength, '0');
 					break;
 
 				case PosLinkMessageFieldFormat.DateddMMyyyy:
