@@ -53,7 +53,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <remarks>
 		/// <para>Maximum length is 6 characters.</para>
 		/// </remarks>
-		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.TextRightPadded, MaxLength = 6, Required = false, Sequence = 6)]
+		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 6, Required = false, Sequence = 6)]
 		public string SerialNumber { get; set; }
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <item><see cref="Amount"/> is gerater than zero</item>
 		/// <item>If <see cref="BankAndBranchNumber"/>.Length is not more than 10 characters and not null or empty.</item>
 		/// <item>If <see cref="AccountNumber"/>.Length is not more than 8 characters and not null or empty.</item>
-		/// <item>If <see cref="SerialNumber"/>.Length is not more than 6 characters and not null or empty.</item>
+		/// <item>If <see cref="SerialNumber"/>.Length is exactly 6 characters and not null, empty or whitespace.</item>
 		/// <item>If <see cref="Id"/>.Length is not more than 10 characters.</item>
 		/// </list>
 		/// </para>
@@ -84,7 +84,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			Amount.GuardZeroOrNegative(nameof(Amount));
 			AccountNumber.GuardNullOrWhiteSpace(nameof(AccountNumber)).Length.GuardRange(nameof(AccountNumber), nameof(AccountNumber.Length), 0, 10);
-			SerialNumber.GuardNullOrWhiteSpace(nameof(SerialNumber)).Length.GuardRange(nameof(SerialNumber), nameof(SerialNumber.Length), 0, 6);
+			SerialNumber.GuardNullOrWhiteSpace(nameof(SerialNumber)).Length.GuardRange(nameof(SerialNumber), nameof(SerialNumber.Length), 6, 6);
 			(Id?.Length ?? 0).GuardRange(nameof(Id), nameof(Id.Length), 0, 10);
 
 			base.Validate();
