@@ -140,6 +140,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private void WriteField<T>(PosLinkMessageField field, T message, Stream stream)
 		{
 			var value = FormatValue(field.GetValue(message), field);
+			if (String.IsNullOrEmpty(value)) return; //Nothing to write
+
+			//TODO: Pool buffers
 			var data = new byte[512];
 			var byteLength = _Encoding.GetBytes(value, 0, value.Length, data, 0);
 			stream.Write(data, 0, byteLength);
