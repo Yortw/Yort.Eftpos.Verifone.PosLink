@@ -110,6 +110,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			{
 				PurchaseAmount = 10.00M
 			};
+
 			var result = await client.ProcessRequest<PurchaseRequest, TransactionResponseBase>(request).ConfigureAwait(false);
 
 			Assert.IsNotNull(result);

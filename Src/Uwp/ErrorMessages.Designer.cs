@@ -143,6 +143,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No transaction is in progress..
+        /// </summary>
+        internal static string NoTransactionInProgress {
+            get {
+                return ResourceManager.GetString("NoTransactionInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to At least one of PurchaseAmount or CashAmount must be greater than zero..
         /// </summary>
         internal static string PurchaseAmountOrCashAmountMustBeSpecified {
@@ -197,7 +206,7 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Communication with EFTPOS device has been interrupted. Check terminal for transaction result..
+        ///   Looks up a localized string similar to Communication with EFTPOS device has been interrupted. Check terminal for transaction result. EFTPOS APPROVED?.
         /// </summary>
         internal static string TransactionFailure {
             get {

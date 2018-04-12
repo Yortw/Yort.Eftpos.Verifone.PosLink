@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AttemptingReconnect" xml:space="preserve">
+    <value>Attempting reconnect</value>
+  </data>
   <data name="DisplayMessage" xml:space="preserve">
     <value>Display Message ({0}): {1}</value>
   </data>
   <data name="ErrorInDisplayMessageEvent" xml:space="preserve">
     <value>An error occurred raising the DisplayMessage event.</value>
+  </data>
+  <data name="ErrorReadingFromInputStream" xml:space="preserve">
+    <value>An error occurred while reading data from the input stream.</value>
   </data>
   <data name="ErrorReceivingMessage" xml:space="preserve">
     <value>Error receiving message:</value>
@@ -131,6 +137,9 @@
   </data>
   <data name="NoResponseFromDevice" xml:space="preserve">
     <value>No response from device, will report as busy.</value>
+  </data>
+  <data name="NoResponseFromDeviceRetry" xml:space="preserve">
+    <value>No response from device, retrying transaction.</value>
   </data>
   <data name="ProcessRequest" xml:space="preserve">
     <value>Process Request {0}: {1}</value>

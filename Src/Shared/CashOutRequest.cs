@@ -60,5 +60,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 			base.Validate();
 		}
 
+		/// <summary>
+		/// Returns the value of the <see cref="CashAmount"/> property.
+		/// </summary>
+		/// <returns>Returns the value of the <see cref="CashAmount"/> property.</returns>
+		public override decimal GetManualResponseTransactionAmount()
+		{
+			return CashAmount;
+		}
 	}
 }

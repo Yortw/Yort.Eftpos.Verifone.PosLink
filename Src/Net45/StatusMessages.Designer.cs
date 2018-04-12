@@ -79,6 +79,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manual Response.
+        /// </summary>
+        internal static string ManualResponse {
+            get {
+                return ResourceManager.GetString("ManualResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sending request, please wait....
         /// </summary>
         internal static string SendingRequest {

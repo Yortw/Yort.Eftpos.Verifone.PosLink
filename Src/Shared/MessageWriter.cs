@@ -12,7 +12,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// A class that encodes friendly message objects into raw protocol bytes and writes them to a stream.
 	/// </summary>
-	internal class MessageWriter
+	internal sealed class MessageWriter
 	{
 
 		private static System.Collections.Concurrent.ConcurrentDictionary<Type, IList<PosLinkMessageField>> _MessageFieldCache;
@@ -140,9 +140,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private void WriteField<T>(PosLinkMessageField field, T message, Stream stream)
 		{
 			var value = FormatValue(field.GetValue(message), field);
-			var data = new byte[512];
-			var byteLength = _Encoding.GetBytes(value, 0, value.Length, data, 0);
-			stream.Write(data, 0, byteLength);
+			using (var buffer = GlobalSettings.BufferManager.GetBuffer())
+			{
+				var byteLength = _Encoding.GetBytes(value, 0, value.Length, buffer.Bytes, 0);
+				stream.Write(buffer.Bytes, 0, byteLength);
+			}
 		}
 
 		private static string FormatValue(object value, PosLinkMessageField field)
@@ -183,7 +185,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					break;
 
 				case PosLinkMessageFieldFormat.ZeroPaddedNumber:
-					retVal = ((decimal)value).ToString("#0.00").PadLeft(field.MaxLength, '0');
+					retVal = ((decimal)value).ToString("#0.00", System.Globalization.CultureInfo.InvariantCulture).PadLeft(field.MaxLength, '0');
 					break;
 
 				case PosLinkMessageFieldFormat.DateddMMyyyy:

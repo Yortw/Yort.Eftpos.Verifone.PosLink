@@ -45,5 +45,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return value ? 'Y' : 'N';
 		}
 
+		/// <summary>
+		/// Returns the (purchase) amount associated this transaction, used when a manual response is created from user input.
+		/// </summary>
+		/// <returns>A decimal value indicating the amount to associate with a manual response to this transaction.</returns>
+		public abstract decimal GetManualResponseTransactionAmount();
 	}
 }

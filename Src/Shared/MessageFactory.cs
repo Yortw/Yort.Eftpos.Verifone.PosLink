@@ -96,5 +96,37 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			return retVal;
 		}
+
+		/// <summary>
+		/// Creates a new transaction response message based on the provided request and accepted flag.
+		/// </summary>
+		/// <param name="request">The request to create a manual response for.</param>
+		/// <param name="accepted">A boolean indicating if the response should say the transaction was accepted and funds transferred (true), or declined.</param>
+		/// <returns></returns>
+		public TransactionResponseBase CreateManualTransactionResponse(PosLinkTransactionRequestBase request, bool accepted)
+		{
+			request.GuardNull(nameof(request));
+
+			var fieldList = new List<string>(13)
+			{
+				request.MerchantReference,
+				request.RequestType,
+				request.Merchant.ToString(System.Globalization.CultureInfo.InvariantCulture),
+				request.GetManualResponseTransactionAmount().ToString(System.Globalization.CultureInfo.InvariantCulture)
+			};
+
+			if (request.RequestType == ProtocolConstants.MessageType_Purchase)
+				fieldList.Add(((PurchaseRequest)request).CashAmount.ToString(System.Globalization.CultureInfo.InvariantCulture));
+			fieldList.Add(accepted ? ResponseCodes.Accepted : ResponseCodes.Declined);
+			fieldList.Add(StatusMessages.ManualResponse);
+			fieldList.Add(String.Empty);
+			fieldList.Add(String.Empty);
+			fieldList.Add(String.Empty);
+			fieldList.Add(String.Empty);
+			fieldList.Add(String.Empty);
+			fieldList.Add(String.Empty);
+
+			return (TransactionResponseBase)CreateMessage(fieldList);
+		}
 	}
 }

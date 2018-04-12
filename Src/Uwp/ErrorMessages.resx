@@ -144,6 +144,9 @@
   <data name="NoHandlerForQueryOperatorConnected" xml:space="preserve">
     <value>The system wanted to prompt the user for a response but no handlers were connected to the PinpadClient.QueryOperator event.</value>
   </data>
+  <data name="NoTransactionInProgress" xml:space="preserve">
+    <value>No transaction is in progress.</value>
+  </data>
   <data name="PurchaseAmountOrCashAmountMustBeSpecified" xml:space="preserve">
     <value>At least one of PurchaseAmount or CashAmount must be greater than zero.</value>
   </data>
@@ -163,7 +166,7 @@
     <value>Terminal busy. Please wait...</value>
   </data>
   <data name="TransactionFailure" xml:space="preserve">
-    <value>Communication with EFTPOS device has been interrupted. Check terminal for transaction result.</value>
+    <value>Communication with EFTPOS device has been interrupted. Check terminal for transaction result. EFTPOS APPROVED?</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
     <value>An unexpected response was received from the pin pad. The request and response types and/or id's do not match.</value>

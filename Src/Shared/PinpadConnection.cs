@@ -25,8 +25,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 				}
 				else
 				{
-					_InStream = new NetworkStream(Socket, false);
-					_OutStream = new NetworkStream(Socket, false);
+					//Must pass 'ownsSocket' as true in order for error handling/
+					//read timeouts to work.
+					_InStream = new NetworkStream(Socket, true);
+					_OutStream = new NetworkStream(Socket, true);
 				}
 			}
 		}
@@ -47,9 +49,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			try
 			{
-				_Socket?.Dispose();
-				_Socket = null;
-				_InStream = _OutStream = null;
+				var socket = _Socket;
+				if (socket != null)
+				{
+					socket.Dispose();
+					_InStream?.Dispose();
+					_OutStream?.Dispose();
+					_Socket = null;
+				}
 			}
 			finally
 			{

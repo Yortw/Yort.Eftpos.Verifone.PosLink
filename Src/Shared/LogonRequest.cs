@@ -28,5 +28,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </summary>
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = false, Sequence = 3)]
 		public string Id { get { return String.Empty; } }
+		
+		/// <summary>
+		/// Returns zero.
+		/// </summary>
+		/// <returns>Returns zero.</returns>
+		public override decimal GetManualResponseTransactionAmount()
+		{
+			return 0;
+		}
 	}
 }

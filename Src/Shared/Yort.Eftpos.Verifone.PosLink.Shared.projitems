@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IDialogAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IEftposLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPinpadClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoTransactionInProgressException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrintRequestedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureRequest.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)LogonRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ManualPanPurchaseResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EftposTraceLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TransactionFailureHandlingStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionResponseBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResponseCodes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TransactionFailureException.cs" />

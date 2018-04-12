@@ -61,6 +61,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attempting reconnect.
+        /// </summary>
+        internal static string AttemptingReconnect {
+            get {
+                return ResourceManager.GetString("AttemptingReconnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display Message ({0}): {1}.
         /// </summary>
         internal static string DisplayMessage {
@@ -75,6 +84,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         internal static string ErrorInDisplayMessageEvent {
             get {
                 return ResourceManager.GetString("ErrorInDisplayMessageEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while reading data from the input stream..
+        /// </summary>
+        internal static string ErrorReadingFromInputStream {
+            get {
+                return ResourceManager.GetString("ErrorReadingFromInputStream", resourceCulture);
             }
         }
         
@@ -102,6 +120,15 @@ namespace Yort.Eftpos.Verifone.PosLink {
         internal static string NoResponseFromDevice {
             get {
                 return ResourceManager.GetString("NoResponseFromDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No response from device, retrying transaction..
+        /// </summary>
+        internal static string NoResponseFromDeviceRetry {
+            get {
+                return ResourceManager.GetString("NoResponseFromDeviceRetry", resourceCulture);
             }
         }
         

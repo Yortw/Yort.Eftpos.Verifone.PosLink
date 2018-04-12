@@ -123,6 +123,9 @@
   <data name="Connecting" xml:space="preserve">
     <value>Connecting, please wait...</value>
   </data>
+  <data name="ManualResponse" xml:space="preserve">
+    <value>Manual Response</value>
+  </data>
   <data name="SendingRequest" xml:space="preserve">
     <value>Sending request, please wait...</value>
   </data>

@@ -57,10 +57,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		public const int ReadDelay_Milliseconds = 100;
 		public const int RetryDelay_Milliseconds = 100;
+		public const int Max_ConnectionRetries = 3;
 
 		public const int MaxBufferSize_Read = 5500;
 
-		public const int MaxRetries = 3;
+		public const int MaxNackRetries = 3;
 
 		public const int ValidMesage_MinBytes = 5;
 

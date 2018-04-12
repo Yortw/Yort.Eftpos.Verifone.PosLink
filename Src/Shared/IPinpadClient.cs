@@ -16,14 +16,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Raised when there is an information prompt or status change that should be displayed to the user.
 		/// </summary>
 		/// <remarks>
-		/// <para>This event may be raised from background threads, any code updating UI may need to invoke to the UI thread.</para>
+		/// <para>This event may be raised from background threads, any event handler code interacting with UI may need to invoke to the UI thread.</para>
 		/// </remarks>
 		event EventHandler<DisplayMessageEventArgs> DisplayMessage;
 		/// <summary>
 		/// Raised when there is a question that must be answered by the operator.
 		/// </summary>
 		/// <remarks>
-		/// <para>This event may be raised from background threads, any code updating UI may need to invoke to the UI thread.</para>
+		/// <para>This event may be raised from background threads, any event handler code interacting with UI may need to invoke to the UI thread.</para>
 		/// </remarks>
 		event EventHandler<QueryOperatorEventArgs> QueryOperator;
 
@@ -56,5 +56,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 		Task<TResponseMessage> RetryRequest<TRequestMessage, TResponseMessage>(TRequestMessage requestMessage)
 			where TRequestMessage : PosLinkRequestBase
 			where TResponseMessage : PosLinkResponseBase;
+
+		/// <summary>
+		/// Sets or returns a value indicating how to handle a communication failure with a pinpad device that means a transaction result cannot be determined.
+		/// </summary>
+		/// <remarks>
+		/// <para>See the <see cref="TransactionFailureHandlingStrategy"/> for details on the possible options.</para>
+		/// </remarks>
+		TransactionFailureHandlingStrategy TransactionFailureHandlingStrategy { get; set; }
 	}
 }

@@ -31,5 +31,15 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			get { return ProtocolConstants.MessageType_Cancel; }
 		}
+
+		/// <summary>
+		/// Returns zero.
+		/// </summary>
+		/// <returns>Returns zero.</returns>
+		public override decimal GetManualResponseTransactionAmount()
+		{
+			return 0;
+		}
+
 	}
 }
