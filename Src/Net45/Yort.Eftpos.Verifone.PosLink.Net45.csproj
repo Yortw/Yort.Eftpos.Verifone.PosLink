@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;CODE_ANALYSIS;SUPPORTS_SERIALIZATION;SUPPORTS_TRACE;SUPPORTS_MSGETBUFFER;NETSTANDARD2_0</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS;CODE_ANALYSIS;SUPPORTS_SERIALIZATION;SUPPORTS_TRACE;SUPPORTS_MSGETBUFFER;NETSTANDARD2_0;TESTS_INTEGRATION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Yort.Eftpos.Verifone.PosLink.xml</DocumentationFile>
@@ -90,7 +90,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="Properties\CodeAnalysisDictionary.xml" />
+    <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
+      <Link>Properties\CodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="..\Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

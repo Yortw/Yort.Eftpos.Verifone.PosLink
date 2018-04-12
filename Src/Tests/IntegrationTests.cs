@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Yort.Eftpos.Verifone.PosLink.Tests
 {
+#if !TESTS_INTEGRATION
+	[Ignore]	
+#endif
 	[TestClass]
 	public class IntegrationTests
 	{
@@ -320,6 +323,57 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			System.Diagnostics.Trace.WriteLine("Display: " + result.Display);
 
 			Assert.AreEqual(DeviceStatus.Ready, result.Status);
+		}
+
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_CanTip()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+
+			//This test does too much, but you have to perform some actions
+			//before performing the next (i.e auth before tip, tip before upload)
+			//any of which could fail, so I question the value of splitting it 
+			//into multiple tests rather than just having good assert messages.
+
+			//Confirm we can start a transaction to add a tip to
+			var request = new TipPreauthRequest()
+			{
+				PurchaseAmount = 20,
+				Id = "POS 1"
+			};
+			var result = await client.ProcessRequest<TipPreauthRequest, TipPreauthResponse>(request).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Preauth Response: " + result.Response);
+			System.Diagnostics.Trace.WriteLine("Preauth Display: " + result.Display);
+			Assert.AreEqual(ResponseCodes.Accepted, result.Response, "Failed to create pre-auth transaction for tip. Transaction result was not 'accepted'.");
+
+			//Now confirm we can add a tip
+			var tipRequest = new TipAddRequest()
+			{
+				TipAmount = 2,
+				OriginalPurchaseAmount = result.PurchaseAmount,
+				Stan = result.Stan				
+			};
+			var tipResult = await client.ProcessRequest<TipAddRequest, TipAddResponse>(tipRequest).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Tip Response: " + tipResult.Response);
+			System.Diagnostics.Trace.WriteLine("Tip Display: " + tipResult.Display);
+			Assert.AreEqual(ResponseCodes.Accepted, tipResult.Response, "Failed to add tip to transaction. Tip Add result was not 'accepted'.");
+
+			//Now confirm we can upload tip batch
+			var tipUploadRequest = new TipBatchUploadRequest();
+			var tipUploadResult = await client.ProcessRequest<TipBatchUploadRequest, TipBatchUploadResponse>(tipUploadRequest).ConfigureAwait(false);
+
+			Assert.IsNotNull(result);
+			System.Diagnostics.Trace.WriteLine("Tip Response: " + tipUploadResult.Response);
+			System.Diagnostics.Trace.WriteLine("Tip Display: " + tipUploadResult.Display);
+			System.Diagnostics.Trace.WriteLine("Merchant Receipt: " + tipUploadResult.MerchantReceipt);
+			System.Diagnostics.Trace.WriteLine("Customer Receipt: " + tipUploadResult.CustomerReceipt);
+			Assert.AreEqual(ResponseCodes.Accepted, tipResult.Response, "Failed to upload tip batch. Upload result was not 'accepted'.");
 		}
 
 		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)

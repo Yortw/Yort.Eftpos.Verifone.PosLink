@@ -10,7 +10,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		[TestMethod]
 		public async Task MessageWriter_WritesWithCrc()
 		{
-			var expected = "\u0002D25310001,PUR,1,000010.00,000000.00,Test Text,YY\u0003\r";
+			var expected = "\u0002D25310001,PUR,1,000010.00,000000.00,Test Text,YY\u0003\u000f";
 
 			var writer = new MessageWriter();
 
@@ -44,7 +44,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 		[TestMethod]
 		public async Task MessageWriter_WritesEncodedString()
 		{
-			var expected = "\u0002D25310001,PUR,1,000010.00,000000.00,Hi\u001c Yort,YY\u0003\v";
+			var expected = "\u0002D25310001,PUR,1,000010.00,000000.00,Hi\u001c Yort,YY\u0003\t";
 
 			var writer = new MessageWriter();
 
