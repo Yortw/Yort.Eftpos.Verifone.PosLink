@@ -191,15 +191,18 @@ namespace Yort.Eftpos.Verifone.PosLink
 								return await SendAndWaitForFinalResponseAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection, isNewRequest && !haveConnectedAtLeastOnce).ConfigureAwait(false);
 							}
 						}
-						catch (System.TimeoutException te)
+						catch (TransactionFailureException)
 						{
-							GlobalSettings.Logger.LogWarn(LogMessages.NoResponseFromDeviceRetry, te);
-							if (!haveConnectedAtLeastOnce) throw;
+							throw;
 						}
 						catch (Exception ex)
 						{
-							GlobalSettings.Logger.LogError(ex.Message, ex);
-							if (!haveConnectedAtLeastOnce) throw;
+							if (ex as TimeoutException != null && haveConnectedAtLeastOnce)
+								GlobalSettings.Logger.LogWarn(LogMessages.NoResponseFromDeviceRetry, ex);
+							else
+								GlobalSettings.Logger.LogError(ex.Message, ex);	
+
+							if (!haveConnectedAtLeastOnce) throw new PosLinkConnectionException(ErrorMessages.ConnectionFailed, ex);
 						}
 
 						retries++;
@@ -252,18 +255,27 @@ namespace Yort.Eftpos.Verifone.PosLink
 			where TRequestMessage : PosLinkRequestBase
 			where TResponseMessage : PosLinkResponseBase
 		{
-			var pollResponse = await PollDeviceStatusAsync(connection).ConfigureAwait(false);
+			try
+			{
+				var pollResponse = await PollDeviceStatusAsync(connection).ConfigureAwait(false);
 
-			var isCancelRequest = requestMessage.RequestType == ProtocolConstants.MessageType_Cancel;
+				var isCancelRequest = requestMessage.RequestType == ProtocolConstants.MessageType_Cancel;
 
-			// Both new requests and re-requests require a poll according to the spec,
-			// it's just how we handle the result that changes
-			if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll) //Client asked for poll so just send this response, no need to poll a second time.
-				return (TResponseMessage)(PosLinkResponseBase)pollResponse;
-			else if (pollResponse.Status == DeviceStatus.Ready && isCancelRequest) // We're not busy and they asked to cancel, which is an error (otherwise client waits for a response that will never come)
-				throw new NoTransactionInProgressException();
-			else if (pollResponse.Status == DeviceStatus.Busy && isNewRequest && !isCancelRequest) // Pinpad is busy processing a request and this is a *new* request so error as this sort of concurrency is not supported by device.
-				throw new DeviceBusyException();
+				// Both new requests and re-requests require a poll according to the spec,
+				// it's just how we handle the result that changes
+				if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll) //Client asked for poll so just send this response, no need to poll a second time.
+					return (TResponseMessage)(PosLinkResponseBase)pollResponse;
+				else if (pollResponse.Status == DeviceStatus.Ready && isCancelRequest) // We're not busy and they asked to cancel, which is an error (otherwise client waits for a response that will never come)
+					throw new NoTransactionInProgressException();
+				else if (pollResponse.Status == DeviceStatus.Busy && isNewRequest && !isCancelRequest) // Pinpad is busy processing a request and this is a *new* request so error as this sort of concurrency is not supported by device.
+					throw new DeviceBusyException();
+			}
+			catch (Exception ex)
+			{
+				if (isNewRequest) throw;
+
+				throw new TransactionFailureException(ErrorMessages.TransactionFailure, ex);
+			}
 
 			if (existingConnection == connection)
 			{
@@ -285,6 +297,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 				_CurrentReadTask = ReadUntilFinalResponse<TResponseMessage>(requestMessage.MerchantReference, connection);
 
 			var retVal = await _CurrentReadTask.ConfigureAwait(false);
+
+			//Spec 2.2, page 46
 			if (retVal.MessageType != requestMessage.RequestType || retVal.MerchantReference != requestMessage.MerchantReference) throw new UnexpectedResponseException(retVal);
 
 			return (TResponseMessage)retVal;
@@ -318,11 +332,11 @@ namespace Yort.Eftpos.Verifone.PosLink
 				}
 
 				//Poll is an exception because it's id is always XXXXXX apparently.
+				//Spec 2.2, page 46
 				if (message.MerchantReference != requestReference && message.MessageType != ProtocolConstants.MessageType_Poll) throw new UnexpectedResponseException(message);
 
 				retVal = message as TResponseMessage;
 				if (retVal != null) break;
-
 				switch (message.MessageType)
 				{
 					case ProtocolConstants.MessageType_Display:
@@ -345,7 +359,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 						break;
 
 					default:
-						throw new UnexpectedResponseException(message);
+						throw new UnexpectedResponseException(message); //Spec 2.2, page 46
 				}
 			}
 
@@ -430,8 +444,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 				catch (PosLinkNackException nex)
 				{
 					// Spec 2.2, Page 7; For any NAK the sender retries a maximum of 3 times. 
+					GlobalSettings.Logger.LogWarn(LogMessages.ReceivedNack, nex);
+
 					retries++;
-					if (retries >= ProtocolConstants.MaxNackRetries) throw new TransactionFailureException(ErrorMessages.TransactionFailure, nex);
+					if (retries >= ProtocolConstants.MaxNackRetries) throw;
 
 					await Task.Delay(ProtocolConstants.RetryDelay_Milliseconds).ConfigureAwait(false);
 				}

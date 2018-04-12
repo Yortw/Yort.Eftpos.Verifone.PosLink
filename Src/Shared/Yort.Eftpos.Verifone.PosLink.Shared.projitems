@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IEftposLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPinpadClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoTransactionInProgressException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkConnectionException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrintRequestedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureRequest.cs" />

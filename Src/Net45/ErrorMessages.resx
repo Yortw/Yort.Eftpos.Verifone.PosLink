@@ -120,6 +120,9 @@
   <data name="CashOutNotAllowedWithManualPan" xml:space="preserve">
     <value>Cash out is not allowed when using manual PAN.</value>
   </data>
+  <data name="ConnectionFailed" xml:space="preserve">
+    <value>Unable to connect to pinpad.</value>
+  </data>
   <data name="InvalidProtocolMessage" xml:space="preserve">
     <value>An invalid protocol message was received from the network.</value>
   </data>
