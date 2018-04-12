@@ -46,11 +46,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public const string MessageType_SettlementEnquiry = "ENQ";
 		public const string MessageType_Sig = "SIG";
 		public const string MessageType_TerminalTotals = "TOL";
-		public const string MessageType_TipAdd = "TAR";
-		public const string MessageType_TipBatchUpload = "TBU";
-		public const string MessageType_TipPreauth = "TPA";
-		public const string MessageType_TipPreauthManualPan = "TPM";
-		public const string MessageType_TipVoid = "TVD";
 
 		public const int MinMerchantId = 1;
 		public const int MaxMerchantId = 8;
