@@ -25,5 +25,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Raised when a receipt needs to be printed (such as a signature slip) during the UI process.
 		/// </summary>
 		event EventHandler<PrintRequestedEventArgs> PrintRequested;
+
+		/// <summary>
+		/// Hides the UI/dialog if it is currently visible.
+		/// </summary>
+		/// <remarks>
+		/// <para>The UI/dialog will be automatically re-displayed if another display or query prompt is requested.</para>
+		/// </remarks>
+		void Hide();
 	}
 }

@@ -185,6 +185,29 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		#endregion
 
+		#region Public Methods
+		
+		public void Hide()
+		{
+			var dialog = _Dialog;
+			if (dialog == null) return;
+			if (!dialog.IsHandleCreated) return;
+
+			try
+			{
+				if (dialog.InvokeRequired)
+				{
+					dialog.Invoke(new Action(Hide));
+					return;
+				}
+
+				dialog?.Hide();
+			}
+			catch (InvalidOperationException) { } // Race condition on dialog disposal etc.
+		}
+
+		#endregion
+
 		#region Private Methods
 
 		private void DisconnectQueryButtonHandlers()

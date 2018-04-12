@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Yort.Eftpos.Verifone.PosLink</id>
-    <version>0.1.6</version>
+    <version>0.1.8</version>
     <title>Yort.Eftpos.Verifone.PosLink</title>
     <authors>Troy Willmot</authors>
     <owners>Yortw</owners>
@@ -11,7 +11,7 @@
     <iconUrl>https://raw.githubusercontent.com/Yortw/Yort.Eftpos.Verifone.PosLink/master/Icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An unofficial .Net implementation of the Verifone PosLink protocol for EFTPOS pinpads.</description>
-    <summary>A 100% .Net implementation of the Verifone PosLink protocol for EFTPOS pinpads for performing POS EFTPOS transactions in NZ (and anywhere else supporting the same protocol).</summary>
+    <summary>A 100% .Net (unofficial) implementation of the Verifone PosLink protocol for EFTPOS pinpads for performing POS EFTPOS transactions in NZ (and anywhere else supporting the same protocol).</summary>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <language>en-NZ</language>

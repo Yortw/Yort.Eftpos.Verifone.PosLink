@@ -20,10 +20,46 @@ Currently;
 * .Net 4.5
 * UWP 10+ (Windows 10 Universal Programs, v10240 and up)
 
-# Getting Started
+## Supported Features
+* Standard financial transactions
+    * Purchase with or without cash out
+    * Manual purchase (for PCIDSS compliance, cannot provide card details programmatically, must be entered on pinpad)
+    * Cash out (only)
+    * Manual cash out 
+    * Refund
+    * Manual refund (for PCIDSS compliance, cannot provide card details programmatically, must be entered on pinpad)
+* Common admin functions    
+    * Logon
+    * Settlement Enquiry
+    * Settlement Cutover
+    * Reprint Last Receipt
+    * Print (with optional reset) totals
+* Cheque Authorisation
+* Poll request (device status)
+* Cancel transaction
+* Query card
+* Ask responses (don't think these are used anymore but they have been implemented)
 
+**Unsupported Features**
+* All tip related transactions (advised these are obsolete)
+* All tab related transactions (unknown if these are obsolete or not)
+* PRN messages (host printing)
+* Host comms
+
+Adding missing messages, where still supported by current protocol and hardware, should be fairly easy.
+
+
+# Getting Started
 Install the Nuget package like this;
 
 ```powershell
     PM> Install-Package Yort.Eftpos.Verifone.PosLink
 ```
+
+There is a secondary project/Nuget package for Windows Forms based projects which will provide default user interface and prompts during a transaction (you can build your own, but this saves you having too if you're ok with the UI style provided). 
+
+```powershell
+    PM> Install-Package Yort.Eftpos.Verifone.PosLink.WinForms
+```
+
+
