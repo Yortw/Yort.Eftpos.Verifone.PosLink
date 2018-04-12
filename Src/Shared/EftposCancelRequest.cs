@@ -14,7 +14,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <para>There is no matching response message for this request, if the cancellation is successful and immediate Transaction response will be returned with a cancelled status.</para>
 	/// <para>See POS Link 2.2 specification, page 12.</para>
 	/// </remarks>
-	public sealed class EftposCancelRequest : PosLinkTransactionRequestBase
+	public sealed class EftposCancelRequest : PosLinkTransactionOptionsRequestBase
 	{
 
 		/// <summary>
@@ -30,15 +30,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		public override string RequestType
 		{
 			get { return ProtocolConstants.MessageType_Cancel; }
-		}
-
-		/// <summary>
-		/// Returns zero.
-		/// </summary>
-		/// <returns>Returns zero.</returns>
-		public override decimal GetManualResponseTransactionAmount()
-		{
-			return 0;
 		}
 
 	}

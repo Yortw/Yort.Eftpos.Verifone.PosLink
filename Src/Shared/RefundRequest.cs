@@ -9,7 +9,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// Represents a request for refund of a prior purchase.
 	/// </summary>
 	/// <seealso cref="RefundResponse"/>
-	public sealed class RefundRequest : PosLinkTransactionRequestBase
+	public sealed class RefundRequest : PosLinkFinancialTransactionRequestBase
 	{
 
 		/// <summary>
@@ -28,10 +28,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		}
 
 		/// <summary>
-		/// Sets or returns the amount of the refund.
+		/// Sets or returns the amount of the refund, must be greater than zero.
 		/// </summary>
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.ZeroPaddedNumber, MaxLength = 9, Required = false, Sequence = 3)]
-		public decimal RefundAmount { get; set; }
+		public override decimal Amount { get; set; }
 
 		/// <summary>
 		/// Optional text to be displayed on terminal at Swipe Card prompt.
@@ -49,26 +49,16 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <para>
 		/// Performs the following validations in addition to those provided by base classes;
 		/// <list type="bullet">
-		/// <item><see cref="RefundAmount"/> is greater than zero.</item>
+		/// <item><see cref="Amount"/> is greater than zero.</item>
 		/// <item>If <see cref="Id"/>.Length is not more than 10 characters.</item>
 		/// </list>
 		/// </para>
 		/// </remarks>
 		public override void Validate()
 		{
-			RefundAmount.GuardZeroOrNegative(nameof(RefundAmount));
 			(Id?.Length ?? 0).GuardRange(nameof(Id), nameof(Id.Length), 0, 10);
 
 			base.Validate();
-		}
-
-		/// <summary>
-		/// Returns the value of the <see cref="RefundAmount"/> property.
-		/// </summary>
-		/// <returns>Returns the value of the <see cref="RefundAmount"/> property</returns>
-		public override decimal GetManualResponseTransactionAmount()
-		{
-			return RefundAmount;
 		}
 	}
 }

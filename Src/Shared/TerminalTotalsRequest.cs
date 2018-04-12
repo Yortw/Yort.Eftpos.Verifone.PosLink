@@ -8,7 +8,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// Requests totals for the terminal be returned, and optionally reset.
 	/// </summary>
 	/// <seealso cref="TerminalTotalsResponse"/>
-	public sealed class TerminalTotalsRequest : PosLinkTransactionRequestBase
+	public sealed class TerminalTotalsRequest : PosLinkTransactionOptionsRequestBase
 	{
 
 		/// <summary>
@@ -35,13 +35,5 @@ namespace Yort.Eftpos.Verifone.PosLink
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = false, Sequence = 4)]
 		public string Id { get; set; }
 
-		/// <summary>
-		/// Returns zero.
-		/// </summary>
-		/// <returns>Returns zero.</returns>
-		public override decimal GetManualResponseTransactionAmount()
-		{
-			return 0;
-		}
 	}
 }

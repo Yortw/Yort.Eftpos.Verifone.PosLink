@@ -6,14 +6,14 @@ using System.Text;
 namespace Yort.Eftpos.Verifone.PosLink
 {
 	/// <summary>
-	/// Base class for all classes that represent messages that contain transaction options.
+	/// Base class for all classes that represent messages that contain transaction options and an amount.
 	/// </summary>
-	public abstract class PosLinkTransactionRequestBase : PosLinkRequestBase
+	public abstract class PosLinkTransactionOptionsRequestBase : PosLinkRequestBase
 	{
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
-		protected PosLinkTransactionRequestBase()
+		protected PosLinkTransactionOptionsRequestBase() : base()
 		{
 		}
 
@@ -45,10 +45,5 @@ namespace Yort.Eftpos.Verifone.PosLink
 			return value ? 'Y' : 'N';
 		}
 
-		/// <summary>
-		/// Returns the (purchase) amount associated this transaction, used when a manual response is created from user input.
-		/// </summary>
-		/// <returns>A decimal value indicating the amount to associate with a manual response to this transaction.</returns>
-		public abstract decimal GetManualResponseTransactionAmount();
 	}
 }

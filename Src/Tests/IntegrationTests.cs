@@ -108,7 +108,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			client.QueryOperator += Client_QueryOperator;
 			var request = new PurchaseRequest()
 			{
-				PurchaseAmount = 10.00M
+				Amount = 10.00M
 			};
 
 			var result = await client.ProcessRequest<PurchaseRequest, TransactionResponseBase>(request).ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var request = new ManualPanPurchaseRequest()
 			{
-				PurchaseAmount = 10.00M
+				Amount = 10.00M
 			};
 			var result = await client.ProcessRequest<ManualPanPurchaseRequest, ManualPanPurchaseResponse>(request).ConfigureAwait(false);
 
@@ -162,7 +162,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var request = new RefundRequest()
 			{
-				RefundAmount = 10.00M
+				Amount = 10.00M
 			};
 			var result = await client.ProcessRequest<RefundRequest, RefundResponse>(request).ConfigureAwait(false);
 
@@ -186,7 +186,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var request = new ManualPanRefundRequest()
 			{
-				RefundAmount = 10.00M
+				Amount = 10.00M
 			};
 			var result = await client.ProcessRequest<ManualPanRefundRequest, ManualPanRefundResponse>(request).ConfigureAwait(false);
 
@@ -210,7 +210,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var request = new CashOutRequest()
 			{
-				CashAmount = 10M
+				Amount = 10M
 			};
 			var result = await client.ProcessRequest<CashOutRequest, CashOutResponse>(request).ConfigureAwait(false);
 
@@ -234,7 +234,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 			var purchaseRequest = new PurchaseRequest()
 			{
-				PurchaseAmount = 10.00M,
+				Amount = 10.00M,
 			};
 			var purchaseTask = client.ProcessRequest<PurchaseRequest, TransactionResponseBase>(purchaseRequest);
 			await Task.Delay(5000).ConfigureAwait(false);

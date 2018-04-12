@@ -8,10 +8,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Represents a request for cash out with no purchase/payment value.
 	/// </summary>
-	/// <seealso cref="PosLinkTransactionRequestBase"/>
+	/// <seealso cref="PosLinkTransactionOptionsRequestBase"/>
 	/// <seealso cref="TransactionResponseBase"/>
 	/// <seealso cref="CashOutResponse"/>
-	public class CashOutRequest : PosLinkTransactionRequestBase
+	public class CashOutRequest : PosLinkFinancialTransactionRequestBase
 	{
 		/// <summary>
 		/// Default constructor.
@@ -29,7 +29,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Sets or returns the amount of the cash out.
 		/// </summary>
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.ZeroPaddedNumber, MaxLength = 9, Required = false, Sequence = 3)]
-		public decimal CashAmount { get; set; }
+		public override decimal Amount { get; set; }
 
 		/// <summary>
 		/// Optional text to be displayed on terminal at Swipe Card prompt.
@@ -47,26 +47,16 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <para>
 		/// Performs the following validations in addition to those provided by base classes;
 		/// <list type="bullet">
-		/// <item><see cref="CashAmount"/> is greater than zero.</item>
+		/// <item><see cref="Amount"/> is greater than zero.</item>
 		/// <item>If <see cref="Id"/>.Length is not more than 10 characters.</item>
 		/// </list>
 		/// </para>
 		/// </remarks>
 		public override void Validate()
 		{
-			CashAmount.GuardZeroOrNegative(nameof(CashAmount));
 			(Id?.Length ?? 0).GuardRange(nameof(Id), nameof(Id.Length), 0, 10);
 
 			base.Validate();
-		}
-
-		/// <summary>
-		/// Returns the value of the <see cref="CashAmount"/> property.
-		/// </summary>
-		/// <returns>Returns the value of the <see cref="CashAmount"/> property.</returns>
-		public override decimal GetManualResponseTransactionAmount()
-		{
-			return CashAmount;
 		}
 	}
 }

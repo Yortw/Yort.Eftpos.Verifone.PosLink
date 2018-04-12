@@ -8,7 +8,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// Requests the last EFTPOS receipt be printed (or returns so it can be printed by the client).
 	/// </summary>
 	/// <seealso cref="ReprintLastReceiptRequest"/>
-	public sealed class ReprintLastReceiptRequest : PosLinkTransactionRequestBase
+	public sealed class ReprintLastReceiptRequest : PosLinkTransactionOptionsRequestBase
 	{
 
 		/// <summary>
@@ -29,13 +29,5 @@ namespace Yort.Eftpos.Verifone.PosLink
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.Text, MaxLength = 10, Required = false, Sequence = 3)]
 		public string Id { get; set; }
 
-		/// <summary>
-		/// Returns zero.
-		/// </summary>
-		/// <returns>Returns zero.</returns>
-		public override decimal GetManualResponseTransactionAmount()
-		{
-			return 0;
-		}
 	}
 }

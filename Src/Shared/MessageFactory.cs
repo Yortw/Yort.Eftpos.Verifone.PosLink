@@ -103,16 +103,17 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <param name="request">The request to create a manual response for.</param>
 		/// <param name="accepted">A boolean indicating if the response should say the transaction was accepted and funds transferred (true), or declined.</param>
 		/// <returns></returns>
-		public TransactionResponseBase CreateManualTransactionResponse(PosLinkTransactionRequestBase request, bool accepted)
+		public TransactionResponseBase CreateManualTransactionResponse(PosLinkTransactionOptionsRequestBase request, bool accepted)
 		{
 			request.GuardNull(nameof(request));
 
+			var finTranRequest = request as PosLinkFinancialTransactionRequestBase;
 			var fieldList = new List<string>(13)
 			{
 				request.MerchantReference,
 				request.RequestType,
 				request.Merchant.ToString(System.Globalization.CultureInfo.InvariantCulture),
-				request.GetManualResponseTransactionAmount().ToString(System.Globalization.CultureInfo.InvariantCulture)
+				(finTranRequest?.Amount ?? 0.00M).ToString(System.Globalization.CultureInfo.InvariantCulture)
 			};
 
 			if (request.RequestType == ProtocolConstants.MessageType_Purchase)

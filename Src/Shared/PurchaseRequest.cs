@@ -8,9 +8,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Represents a request for payment with optional cash out.
 	/// </summary>
-	/// <seealso cref="PosLinkTransactionRequestBase"/>
+	/// <seealso cref="PosLinkTransactionOptionsRequestBase"/>
 	/// <seealso cref="TransactionResponseBase"/>
-	public class PurchaseRequest : PosLinkTransactionRequestBase
+	public class PurchaseRequest : PosLinkFinancialTransactionRequestBase
 	{
 		/// <summary>
 		/// Default constructor.
@@ -28,10 +28,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Sets or returns the amount of the purchase.
 		/// </summary>
 		/// <remarks>
-		/// <para>May be left as zero if only cash out is desired. Must not be negative.</para>
+		/// <para>Must not be negative or zero.</para>
 		/// </remarks>
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.ZeroPaddedNumber, MaxLength = 9, Required = false, Sequence = 3)]
-		public decimal PurchaseAmount { get; set; }
+		public override decimal Amount { get; set; }
 
 		/// <summary>
 		/// Sets or returns the amount of the cash out.
@@ -58,7 +58,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <para>
 		/// Performs the following validations in addition to those provided by base classes;
 		/// <list type="bullet">
-		/// <item><see cref="PurchaseAmount"/> is greater than zero</item>
+		/// <item><see cref="Amount"/> is greater than zero</item>
 		/// <item><see cref="CashAmount"/> is not negative</item>
 		/// <item>If <see cref="Id"/>.Length is not more than 10 characters.</item>
 		/// </list>
@@ -66,20 +66,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </remarks>
 		public override void Validate()
 		{
-			PurchaseAmount.GuardZeroOrNegative(nameof(PurchaseAmount));
 			CashAmount.GuardNegative(nameof(CashAmount));
 			(Id?.Length ?? 0).GuardRange(nameof(Id), nameof(Id.Length), 0, 10);
 
 			base.Validate();
-		}
-
-		/// <summary>
-		/// Returns the value of the <see cref="PurchaseAmount"/> property.
-		/// </summary>
-		/// <returns>Returns the value of the <see cref="PurchaseAmount"/> property</returns>
-		public override decimal GetManualResponseTransactionAmount()
-		{
-			return PurchaseAmount;
 		}
 
 	}

@@ -224,7 +224,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 					//See POS Link spec 2.2, page 45, Messaging Timeouts section.
 					//If we got no response after a predetermined time (advised 60 seconds) 
 					//then request result from user.
-					var tranRequest = requestMessage as PosLinkTransactionRequestBase;
+					var tranRequest = requestMessage as PosLinkTransactionOptionsRequestBase;
 					if (this.TransactionFailureHandlingStrategy == TransactionFailureHandlingStrategy.ThrowException || tranRequest == null) throw;
 
 					return await HandleTransactionFailure<TResponseMessage>(tranRequest, te).ConfigureAwait(false);
@@ -242,7 +242,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			}
 		}
 
-		private async Task<TResponseMessage> HandleTransactionFailure<TResponseMessage>(PosLinkTransactionRequestBase request, TransactionFailureException te) where TResponseMessage : PosLinkResponseBase
+		private async Task<TResponseMessage> HandleTransactionFailure<TResponseMessage>(PosLinkTransactionOptionsRequestBase request, TransactionFailureException te) where TResponseMessage : PosLinkResponseBase
 		{
 			var userResponse = await OnQueryOperator(request.MerchantReference, ErrorMessages.TransactionFailure, null, ProtocolConstants.DefaultQueryResponses).ConfigureAwait(false);
 			var accepted = userResponse == ProtocolConstants.Response_Yes;

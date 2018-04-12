@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IPinpadClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoTransactionInProgressException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PosLinkConnectionException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkFinancialTransactionRequestBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrintRequestedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SignatureRequest.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PollResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PosLinkNackException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PosLinkResponseBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PosLinkTransactionRequestBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PosLinkTransactionOptionsRequestBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PosLinkRequestBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PosLinkMessageField.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PosLinkMessageFieldAttribute.cs" />
