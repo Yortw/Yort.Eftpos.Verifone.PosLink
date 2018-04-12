@@ -8,10 +8,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// <summary>
 	/// Represents a request to authorise a cheque.
 	/// </summary>
-	/// <seealso cref="PosLinkTransactionRequestBase"/>
+	/// <seealso cref="PosLinkFinancialTransactionRequestBase"/>
 	/// <seealso cref="TransactionResponseBase"/>
 	/// <seealso cref="ChequeAuthorisationResponse"/>
-	public class ChequeAuthorisationRequest : PosLinkTransactionRequestBase
+	public class ChequeAuthorisationRequest : PosLinkFinancialTransactionRequestBase
 	{
 
 		/// <summary>
@@ -30,7 +30,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// Sets or returns the amount of the cash out.
 		/// </summary>
 		[PosLinkMessageField(Format = PosLinkMessageFieldFormat.ZeroPaddedNumber, MaxLength = 9, Required = false, Sequence = 3)]
-		public decimal Amount { get; set; }
+		public override decimal Amount { get; set; }
 
 		/// <summary>	
 		/// Sets or returns the bank and branch number associated with the cheque.
@@ -82,7 +82,6 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// </remarks>
 		public override void Validate()
 		{
-			Amount.GuardZeroOrNegative(nameof(Amount));
 			AccountNumber.GuardNullOrWhiteSpace(nameof(AccountNumber)).Length.GuardRange(nameof(AccountNumber), nameof(AccountNumber.Length), 0, 10);
 			SerialNumber.GuardNullOrWhiteSpace(nameof(SerialNumber)).Length.GuardRange(nameof(SerialNumber), nameof(SerialNumber.Length), 6, 6);
 			(Id?.Length ?? 0).GuardRange(nameof(Id), nameof(Id.Length), 0, 10);
