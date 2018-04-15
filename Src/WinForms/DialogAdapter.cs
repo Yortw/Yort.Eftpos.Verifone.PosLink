@@ -187,6 +187,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		#region Public Methods
 		
+		/// <summary>
+		/// Hides the UI/dialog if it is currently visible.
+		/// </summary>
+		/// <remarks>
+		/// <para>The UI/dialog will be automatically re-displayed if another display or query prompt is requested.</para>
+		/// </remarks>		
 		public void Hide()
 		{
 			var dialog = _Dialog;

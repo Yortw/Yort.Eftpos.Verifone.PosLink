@@ -35,7 +35,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// The merchant receipt text. Preformatted receipt data. If the POS previously requested receipt data, the signature capture receipt.
 		/// </summary>
-		public string ReceiptText { get { return Fields[3]; } }
+		public string ReceiptText { get { return Fields[4]; } }
 
 	}
 }
