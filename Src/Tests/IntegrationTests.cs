@@ -127,6 +127,24 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 			Assert.AreEqual(ResponseCodes.Accepted, result.Response);
 		}
 
+		[ExpectedException(typeof(ArgumentException))]
+		[TestCategory("Integration")]
+		[TestMethod]
+		public async Task Integration_RethrowsArgumentExceptions()
+		{
+			var client = new PinpadClient(PinPadIP, PinPadPort);
+			client.DisplayMessage += Client_DisplayMessage;
+			client.QueryOperator += Client_QueryOperator;
+			var request = new PurchaseRequest()
+			{
+				Amount = 1000000.00M
+			};
+
+			var result = await client.ProcessRequest<PurchaseRequest, TransactionResponseBase>(request).ConfigureAwait(false);
+
+			Assert.Fail("Argument exception expected");
+		}
+
 		private void Client_QueryOperator(object sender, QueryOperatorEventArgs e)
 		{
 			e.SetResponse("YES");

@@ -195,6 +195,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 						{
 							throw;
 						}
+						catch (ArgumentException)
+						{
+							throw;
+						}
 						catch (Exception ex)
 						{
 							if (ex as TimeoutException != null && haveConnectedAtLeastOnce)
