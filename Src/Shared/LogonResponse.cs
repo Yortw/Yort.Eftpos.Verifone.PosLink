@@ -37,7 +37,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// Returns the receipt data, if any, to be printed.
 		/// </summary>
-		public string ReceiptData { get { return FieldValueOrNull(4); } }
+		public string ReceiptData { get { return FieldValueOrNull(5); } }
 
 	}
 }
