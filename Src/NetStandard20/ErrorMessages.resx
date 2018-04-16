@@ -178,6 +178,6 @@
     <value>This value is required.</value>
   </data>
   <data name="ValueIsTooLong" xml:space="preserve">
-    <value>The formatted value of {0} is too longer than the protocol allows for this field.</value>
+    <value>The formatted value of {0} is too long.</value>
   </data>
 </root>

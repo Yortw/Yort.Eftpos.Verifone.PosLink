@@ -30,12 +30,12 @@ namespace Yort.Eftpos.Verifone.PosLink
 		/// <summary>
 		/// The purchase value originally requested.
 		/// </summary>
-		public decimal PurchaseAmount { get { return this.MessageType != ProtocolConstants.MessageType_CashOnly ? Convert.ToDecimal(Fields[3], System.Globalization.CultureInfo.InvariantCulture) : 0; } }
+		public decimal PurchaseAmount { get { return this.MessageType != ProtocolConstants.MessageType_CashOnly ? ToDecimalOrZero(Fields[3]) : 0; } }
 
 		/// <summary>
 		/// The amount of cash out originally requested.
 		/// </summary>
-		public decimal CashAmount { get { return this.MessageType == ProtocolConstants.MessageType_ManualPanPurchase ? 0 : Convert.ToDecimal(Fields[GetIndex(4)], System.Globalization.CultureInfo.InvariantCulture); } }
+		public decimal CashAmount { get { return this.MessageType == ProtocolConstants.MessageType_ManualPanPurchase ? 0 : ToDecimalOrZero(Fields[GetIndex(4)]); } }
 
 		/// <summary>
 		/// The response code of the transaction.
@@ -80,6 +80,14 @@ namespace Yort.Eftpos.Verifone.PosLink
 		private int GetIndex(int rawIndex)
 		{
 			return this.MessageType == ProtocolConstants.MessageType_Purchase ? rawIndex : rawIndex - 1;
+		}
+
+		internal static decimal ToDecimalOrZero(string value)
+		{
+			if (Decimal.TryParse(value, , System.Globalization.CultureInfo.InvariantCulture, out var retVal))
+				return retVal;
+
+			return 0;
 		}
 
 	}

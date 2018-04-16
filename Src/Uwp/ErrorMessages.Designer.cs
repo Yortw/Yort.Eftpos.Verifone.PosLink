@@ -251,7 +251,7 @@ namespace Yort.Eftpos.Verifone.PosLink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The formatted value of {0} is too longer than the protocol allows for this field..
+        ///   Looks up a localized string similar to The formatted value of {0} is too long..
         /// </summary>
         internal static string ValueIsTooLong {
             get {

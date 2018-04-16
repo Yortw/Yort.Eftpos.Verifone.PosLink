@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Yort.Eftpos.Verifone.PosLink</id>
-    <version>0.1.12</version>
+    <version>0.1.14</version>
     <title>Yort.Eftpos.Verifone.PosLink</title>
     <authors>Troy Willmot</authors>
     <owners>Yortw</owners>
