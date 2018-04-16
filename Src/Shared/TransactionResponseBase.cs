@@ -84,7 +84,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		internal static decimal ToDecimalOrZero(string value)
 		{
-			if (Decimal.TryParse(value, , System.Globalization.CultureInfo.InvariantCulture, out var retVal))
+			if (Decimal.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var retVal))
 				return retVal;
 
 			return 0;
