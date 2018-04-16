@@ -258,7 +258,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 				Amount = 10.00M,
 			};
 			var purchaseTask = client.ProcessRequest<PurchaseRequest, TransactionResponseBase>(purchaseRequest);
-			await Task.Delay(5000).ConfigureAwait(false);
+			await Task.Delay(1000).ConfigureAwait(false);
 
 			var cancelRequest = new EftposCancelRequest()
 			{

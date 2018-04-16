@@ -180,7 +180,9 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 						try // Handle retryable connection errors/timeouts 
 						{
-							OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.Connecting, DisplayMessageSource.Library));
+							if (existingConnection == null)
+								OnDisplayMessage(new DisplayMessage(requestMessage.MerchantReference, StatusMessages.Connecting, DisplayMessageSource.Library));
+
 							using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 							{
 								if (!haveConnectedAtLeastOnce)
@@ -261,18 +263,21 @@ namespace Yort.Eftpos.Verifone.PosLink
 		{
 			try
 			{
-				var pollResponse = await PollDeviceStatusAsync(connection).ConfigureAwait(false);
-
 				var isCancelRequest = requestMessage.RequestType == ProtocolConstants.MessageType_Cancel;
 
-				// Both new requests and re-requests require a poll according to the spec,
-				// it's just how we handle the result that changes
-				if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll) //Client asked for poll so just send this response, no need to poll a second time.
-					return (TResponseMessage)(PosLinkResponseBase)pollResponse;
-				else if (pollResponse.Status == DeviceStatus.Ready && isCancelRequest) // We're not busy and they asked to cancel, which is an error (otherwise client waits for a response that will never come)
-					throw new NoTransactionInProgressException();
-				else if (pollResponse.Status == DeviceStatus.Busy && isNewRequest && !isCancelRequest) // Pinpad is busy processing a request and this is a *new* request so error as this sort of concurrency is not supported by device.
-					throw new DeviceBusyException();
+				if (!isCancelRequest || _CurrentReadTask == null)
+				{
+					var pollResponse = await PollDeviceStatusAsync(connection).ConfigureAwait(false);
+
+					// Both new requests and re-requests require a poll according to the spec,
+					// it's just how we handle the result that changes
+					if (requestMessage.RequestType == ProtocolConstants.MessageType_Poll) //Client asked for poll so just send this response, no need to poll a second time.
+						return (TResponseMessage)(PosLinkResponseBase)pollResponse;
+					else if (pollResponse.Status == DeviceStatus.Ready && isCancelRequest) // We're not busy and they asked to cancel, which is an error (otherwise client waits for a response that will never come)
+						throw new NoTransactionInProgressException();
+					else if (pollResponse.Status == DeviceStatus.Busy && isNewRequest && !isCancelRequest) // Pinpad is busy processing a request and this is a *new* request so error as this sort of concurrency is not supported by device.
+						throw new DeviceBusyException();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -303,7 +308,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			var retVal = await _CurrentReadTask.ConfigureAwait(false);
 
 			//Spec 2.2, page 46
-			if (retVal.MessageType != requestMessage.RequestType || retVal.MerchantReference != requestMessage.MerchantReference) throw new UnexpectedResponseException(retVal);
+			if ((requestMessage.RequestType != ProtocolConstants.MessageType_Cancel && retVal.MessageType != requestMessage.RequestType) || retVal.MerchantReference != requestMessage.MerchantReference) throw new UnexpectedResponseException(retVal);
 
 			return (TResponseMessage)retVal;
 		}
