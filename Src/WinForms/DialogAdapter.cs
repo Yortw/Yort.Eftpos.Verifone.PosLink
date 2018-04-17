@@ -300,7 +300,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 			ShowIfNotVisible();
 
-			OnPrintRequested(e.ReceiptText);
+			if (!String.IsNullOrEmpty(e.ReceiptText))
+				OnPrintRequested(e.ReceiptText);
 
 			_PendingQuery = e;
 
