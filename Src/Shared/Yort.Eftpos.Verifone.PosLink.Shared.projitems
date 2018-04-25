@@ -10,8 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BufferManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChequeAuthorisationRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChequeAuthorisationResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EftposNullLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IBufferManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDialogAdapter.cs" />
