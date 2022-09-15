@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ladon.Net" Version="1.0.2" />
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.2.2" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

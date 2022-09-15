@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Yort.Eftpos.Verifone.PosLink.WinForms</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Yort.Eftpos.Verifone.PosLink.WinForms</title>
     <authors>Troy Willmot</authors>
     <owners>Yortw</owners>
@@ -11,7 +11,7 @@
     <iconUrl>https://raw.githubusercontent.com/Yortw/Yort.Eftpos.Verifone.PosLink/master/Icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A basic WinForms UI implementation for integration with the Yort.Eftpos.Verifone.PosLink package.</description>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes>Updated to newer dependencies.</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <language>en-NZ</language>
     <tags>eftpos poslink verifone payments nz newzealand netstandard20 uwp</tags>
