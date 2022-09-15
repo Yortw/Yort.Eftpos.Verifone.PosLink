@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Yort.Eftpos.Verifone.PosLink</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title>Yort.Eftpos.Verifone.PosLink</title>
     <authors>Troy Willmot</authors>
     <owners>Yortw</owners>
@@ -12,23 +12,23 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An unofficial .Net implementation of the Verifone PosLink protocol for EFTPOS pinpads.</description>
     <summary>A 100% .Net (unofficial) implementation of the Verifone PosLink protocol for EFTPOS pinpads for performing POS EFTPOS transactions in NZ (and anywhere else supporting the same protocol).</summary>
-    <releaseNotes>Updated some dependencies to newer versions.</releaseNotes>
+    <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <language>en-NZ</language>
     <tags>eftpos poslink verifone payments nz newzealand netstandard20 uwp</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Ladon.Net" version="1.0.2" />
-        <dependency id="Microsoft.IO.RecyclableMemoryStream" version="1.2.2" />
+        <dependency id="Microsoft.IO.RecyclableMemoryStream" version="1.4.0" />
         <dependency id="NETStandard.Library" version="2.0.1" />
       </group> 
       <group targetFramework="net45">
         <dependency id="Ladon.Net" version="1.0.2" />
-        <dependency id="Microsoft.IO.RecyclableMemoryStream" version="1.2.2" />
+        <dependency id="Microsoft.IO.RecyclableMemoryStream" version="1.4.0" />
       </group> 
       <group targetFramework="uap10.0">
         <dependency id="Ladon.Net" version="1.0.2" />
-        <dependency id="Microsoft.IO.RecyclableMemoryStream" version="1.2.2" />
+        <dependency id="Microsoft.IO.RecyclableMemoryStream" version="1.4.0" />
         <dependency id="NETStandard.Library" version="2.0.1" />
       </group> 
     </dependencies>
