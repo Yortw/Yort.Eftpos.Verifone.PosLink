@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yort.Eftpos.Verifone.PosLink.NetStandard20", "NetStandard20\Yort.Eftpos.Verifone.PosLink.NetStandard20.csproj", "{A93DFFD3-1155-45B1-A546-CD6C579CFBC9}"
 EndProject
@@ -21,11 +21,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yort.Eftpos.Verifone.PosLink.WinForms", "WinForms\Yort.Eftpos.Verifone.PosLink.WinForms.csproj", "{BE5AA007-4C29-4269-A5C1-7BD68E48ADE3}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{6c342b19-752e-4092-b067-afe6248f208f}*SharedItemsImports = 13
-		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{896502da-e348-4a5f-91f9-472813637508}*SharedItemsImports = 4
-		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{cf2fce24-fab0-4e6b-8dc7-89098da5c71e}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
 		Ad-Hoc|ARM = Ad-Hoc|ARM
@@ -299,5 +294,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0736E929-99E1-4863-9A9E-1E155863A566}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{6c342b19-752e-4092-b067-afe6248f208f}*SharedItemsImports = 13
+		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{896502da-e348-4a5f-91f9-472813637508}*SharedItemsImports = 4
+		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{a93dffd3-1155-45b1-a546-cd6c579cfbc9}*SharedItemsImports = 5
+		Shared\Yort.Eftpos.Verifone.PosLink.Shared.projitems*{cf2fce24-fab0-4e6b-8dc7-89098da5c71e}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
