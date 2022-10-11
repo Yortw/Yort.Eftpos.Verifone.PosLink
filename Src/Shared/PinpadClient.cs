@@ -185,12 +185,13 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 							using (var connection = await ConnectAsync(_Address, _Port).ConfigureAwait(false))
 							{
+								var hadPriorConnected = haveConnectedAtLeastOnce;
 								if (!haveConnectedAtLeastOnce)
 								{
 									haveConnectedAtLeastOnce = true;
 									retries = 0;
 								}
-								return await SendAndWaitForFinalResponseAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection, isNewRequest && !haveConnectedAtLeastOnce).ConfigureAwait(false);
+								return await SendAndWaitForFinalResponseAsync<TRequestMessage, TResponseMessage>(requestMessage, existingConnection, connection, isNewRequest && !hadPriorConnected).ConfigureAwait(false);
 							}
 						}
 						catch (TransactionFailureException)
@@ -198,6 +199,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 							throw;
 						}
 						catch (ArgumentException)
+						{
+							throw;
+						}
+						catch (DeviceBusyException) when (isNewRequest)
 						{
 							throw;
 						}
