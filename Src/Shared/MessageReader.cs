@@ -279,8 +279,10 @@ namespace Yort.Eftpos.Verifone.PosLink
 
 		private static bool IsLrcValid(DataBuffer messageBuffer)
 		{
+			// (messageBuffer.Length - 2) Minus 2, because one less than array length and
+			// another short because we skip the first character (STX).
 			return messageBuffer.Bytes[messageBuffer.Length - 1]
-				!= ProtocolUtilities.CalcLrc(messageBuffer.Bytes, 1, messageBuffer.Length - 1);
+				== ProtocolUtilities.CalcLrc(messageBuffer.Bytes, 1, messageBuffer.Length - 2);
 		}
 
 		private void OnAcknowledgmentTimeout()
