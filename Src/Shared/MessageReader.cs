@@ -13,8 +13,8 @@ namespace Yort.Eftpos.Verifone.PosLink
 	/// </summary>
 	internal sealed class MessageReader
 	{
-		private System.Text.ASCIIEncoding _Encoding;
-		private ResponseMessageFactory _MessageFactory;
+		private readonly System.Text.ASCIIEncoding _Encoding;
+		private readonly ResponseMessageFactory _MessageFactory;
 
 
 		public event EventHandler AcknowledgmentTimeout;
@@ -104,7 +104,7 @@ namespace Yort.Eftpos.Verifone.PosLink
 			outStream.GuardNull(nameof(outStream));
 			if (!outStream.CanWrite) throw new ArgumentException(ErrorMessages.StreamMustBeWriteable, nameof(outStream));
 
-			Task sendAckTask = null;
+			Task sendAckTask;
 			PosLinkResponseBase message = null;
 			while (message == null)
 			{

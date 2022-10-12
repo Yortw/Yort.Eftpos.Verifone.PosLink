@@ -346,7 +346,7 @@ namespace Yort.Eftpos.Verifone.PosLink.Tests
 
 		private void Client_DisplayMessage(object sender, DisplayMessageEventArgs e)
 		{
-			System.Diagnostics.Trace.WriteLine($"Display Message from {e.Message.Source.ToString()}: {e.Message.MessageText}");
+			System.Diagnostics.Trace.WriteLine($"Display Message from {e.Message.Source}: {e.Message.MessageText}");
 		}
 	}
 }

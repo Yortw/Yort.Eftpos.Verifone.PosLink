@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Yort.Eftpos.Verifone.PosLink.WinForms</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <title>Yort.Eftpos.Verifone.PosLink.WinForms</title>
     <authors>Troy Willmot</authors>
     <owners>Yortw</owners>
@@ -17,7 +17,7 @@
     <tags>eftpos poslink verifone payments nz newzealand net45 winforms</tags>
     <dependencies>
       <group targetFramework="net45">
-        <dependency id="Yort.Eftpos.Verifone.PosLink" version="1.0.3" />
+        <dependency id="Yort.Eftpos.Verifone.PosLink" version="1.0.4" />
       </group> 
     </dependencies>
   </metadata>
