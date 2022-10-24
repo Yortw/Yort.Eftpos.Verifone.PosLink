@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Yort.Eftpos.Verifone.PosLink</id>
-    <version>1.0.4-beta2</version>
+    <version>1.0.4</version>
     <title>Yort.Eftpos.Verifone.PosLink</title>
     <authors>Troy Willmot</authors>
     <owners>Yortw</owners>
@@ -12,7 +12,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An unofficial .Net implementation of the Verifone PosLink protocol for EFTPOS pinpads.</description>
     <summary>A 100% .Net (unofficial) implementation of the Verifone PosLink protocol for EFTPOS pinpads for performing POS EFTPOS transactions in NZ (and anywhere else supporting the same protocol).</summary>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes>* Fix bug in LRC validation
+* Fix/improve retry logic on re-requests</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <language>en-NZ</language>
     <tags>eftpos poslink verifone payments nz newzealand netstandard20 uwp</tags>
